@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Filament\Resources\OrderResource\Pages;
+namespace App\Filament\Resources\SaleResource\Pages;
 
-use App\Filament\Resources\OrderResource;
+use App\Filament\Resources\SaleResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
-class EditOrder extends EditRecord
+class EditSale extends EditRecord
 {
-    protected static string $resource = OrderResource::class;
+    protected static string $resource = SaleResource::class;
 
     protected function getHeaderActions(): array
     {
@@ -21,5 +21,4 @@ class EditOrder extends EditRecord
     {
         $this->record->updateProductsStock();
     }
-
 }

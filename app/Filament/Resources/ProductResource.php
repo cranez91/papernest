@@ -18,6 +18,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\SelectColumn;
 use Illuminate\Support\Str;
 
 class ProductResource extends Resource
@@ -25,8 +26,8 @@ class ProductResource extends Resource
     protected static ?string $model = Product::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-archive-box';
-    protected static ?string $navigationGroup = 'Inventory';
-    protected static ?string $pluralModelLabel = 'Products';
+    protected static ?string $navigationGroup = 'Catalogos';
+    protected static ?string $pluralModelLabel = 'Productos';
 
     public static function form(Form $form): Form
     {
@@ -102,13 +103,11 @@ class ProductResource extends Resource
             ->columns([
                 ImageColumn::make('photo')
                     ->label('Photo')
+                    ->toggleable()
                     ->circular(),
 
                 TextColumn::make('name')
                     ->searchable()
-                    ->sortable(),
-
-                TextColumn::make('sku')
                     ->sortable(),
 
                 TextColumn::make('price')
@@ -117,17 +116,24 @@ class ProductResource extends Resource
 
                 TextColumn::make('brand')
                     ->sortable()
+                    ->searchable()
                     ->toggleable(),
+                
+                TextColumn::make('category.name')
+                    ->label('Category')
+                    ->sortable()
+                    ->toggleable()
+                    ->searchable(),
 
                 TextColumn::make('stock')
                     ->sortable(),
 
-                TextColumn::make('status')
-                    ->badge()
-                    ->colors([
-                        'warning' => 'paused',
-                        'success' => 'active',
-                        'danger' => 'inactive',
+                SelectColumn::make('status')
+                    ->searchable()
+                    ->options([
+                        'paused' => 'Paused',
+                        'active' => 'Active',
+                        'inactive' => 'Inactive',
                     ]),
             ])
             ->filters([

@@ -18,6 +18,8 @@ class TagResource extends Resource
     protected static ?string $model = Tag::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationGroup = 'Catalogos';
+    protected static ?string $pluralModelLabel = 'Etiquetas';
 
     public static function form(Form $form): Form
     {

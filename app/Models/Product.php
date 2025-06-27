@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'name',
@@ -43,8 +44,7 @@ class Product extends Model
 
         static::deleting(function ($product) {
             if ($product->photo) {
-                //Storage::disk('public')->delete("products/{$product->image}");
-                Storage::disk('public')->delete("{$product->photo}");
+                // Storage::disk('public')->delete("{$product->photo}");
             }
         });
     }

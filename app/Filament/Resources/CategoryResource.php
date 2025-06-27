@@ -17,8 +17,8 @@ class CategoryResource extends Resource
     protected static ?string $model = Category::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-archive-box';
-    protected static ?string $navigationLabel = 'Categories';
-    protected static ?string $navigationGroup = 'Catalog';
+    protected static ?string $navigationLabel = 'Categorías';
+    protected static ?string $navigationGroup = 'Catalogos';
 
     public static function form(Form $form): Form
     {
@@ -35,10 +35,9 @@ class CategoryResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name')->sortable()->searchable(),
-                TextColumn::make('created_at')
-                    ->dateTime('d M Y H:i')
-                    ->label('Created'),
+                TextColumn::make('name')
+                    ->sortable()
+                    ->searchable(),
             ])
             ->filters([
                 //

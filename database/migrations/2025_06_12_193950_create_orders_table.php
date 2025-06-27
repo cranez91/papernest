@@ -13,13 +13,18 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->uuid('id')->primary(); // UUID generado en frontend
-            $table->string('customer_name');
-            $table->string('whatsapp');
+            $table->string('customer_name')->nullable();
+            $table->string('whatsapp')->nullable();
             $table->string('email')->nullable();
-            $table->text('address');
+            $table->text('address')->nullable();
             $table->enum('status', ['pending', 'confirmed', 'sent', 'delivered', 'cancelled'])->default('pending');
             $table->string('payment_type')->default('cash_on_delivery');
-            $table->decimal('total', 10, 2);
+            $table->decimal('subtotal', 10, 2)->nullable();
+            $table->decimal('shipping_price', 10, 2)->nullable();
+            $table->decimal('total', 10, 2)->nullable();
+            $table->enum('source', ['web', 'admin'])->default('web');
+            $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
+
             $table->timestamps();
         });
     }
