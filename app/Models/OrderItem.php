@@ -31,6 +31,11 @@ class OrderItem extends Model
         static::saving(function ($item) {
             if (is_null($item->price)) {
                 $item->price = $item->product?->price ?? 0;
+                
+            }
+            if (is_null($item->cost)) {
+                $item->cost = $item->product?->cost ?? 0;
+                
             }
         });
 

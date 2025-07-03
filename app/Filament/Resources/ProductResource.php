@@ -19,13 +19,15 @@ use Filament\Tables\Table;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\SelectColumn;
+use Filament\Forms\Components\TagsInput;
+use App\Models\Tag;
 use Illuminate\Support\Str;
 
 class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-archive-box';
+    protected static ?string $navigationIcon = 'heroicon-o-shopping-cart';
     protected static ?string $navigationGroup = 'Catalogos';
     protected static ?string $pluralModelLabel = 'Productos';
 
@@ -79,6 +81,23 @@ class ProductResource extends Resource
                         'inactive' => 'Inactive',
                     ])
                     ->required(),
+                
+                Select::make('tags')
+                    ->label('Etiquetas')
+                    ->relationship('tags', 'name') // ← Aquí se usa la relación many-to-many
+                    ->multiple()
+                    ->preload() // precarga las opciones
+                    ->searchable()
+                    ->createOptionForm([
+                        Forms\Components\TextInput::make('name')
+                            ->label('Nombre de etiqueta')
+                            ->required(),
+                    ])
+                    ->createOptionAction(function (\Filament\Forms\Components\Actions\Action $action) {
+                        return $action
+                            ->modalHeading('Crear nueva etiqueta')
+                            ->modalSubmitActionLabel('Crear');
+                    }),
 
                 FileUpload::make('photo')
                     ->image()
@@ -114,6 +133,17 @@ class ProductResource extends Resource
                     ->money('USD', true)
                     ->sortable(),
 
+                SelectColumn::make('status')
+                    ->searchable()
+                    ->options([
+                        'paused' => 'Paused',
+                        'active' => 'Active',
+                        'inactive' => 'Inactive',
+                ]),
+
+                TextColumn::make('stock')
+                    ->sortable(),
+
                 TextColumn::make('brand')
                     ->sortable()
                     ->searchable()
@@ -124,22 +154,12 @@ class ProductResource extends Resource
                     ->sortable()
                     ->toggleable()
                     ->searchable(),
-
-                TextColumn::make('stock')
-                    ->sortable(),
-
-                SelectColumn::make('status')
-                    ->searchable()
-                    ->options([
-                        'paused' => 'Paused',
-                        'active' => 'Active',
-                        'inactive' => 'Inactive',
-                    ]),
             ])
             ->filters([
                 // Puedes agregar filtros aquí si lo deseas
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
@@ -160,6 +180,7 @@ class ProductResource extends Resource
         return [
             'index' => Pages\ListProducts::route('/'),
             'create' => Pages\CreateProduct::route('/create'),
+            'view' => Pages\ViewProduct::route('/{record}'),
             'edit' => Pages\EditProduct::route('/{record}/edit'),
         ];
     }

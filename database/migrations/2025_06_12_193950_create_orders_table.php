@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('whatsapp')->nullable();
             $table->string('email')->nullable();
             $table->text('address')->nullable();
-            $table->enum('status', ['pending', 'confirmed', 'sent', 'delivered', 'cancelled'])->default('pending');
+            $table->enum('status', ['pending', 'confirmed', 'sent', 'delivered', 'cancelled', 'paid'])->default('pending');
             $table->string('payment_type')->default('cash_on_delivery');
             $table->decimal('subtotal', 10, 2)->nullable();
             $table->decimal('shipping_price', 10, 2)->nullable();

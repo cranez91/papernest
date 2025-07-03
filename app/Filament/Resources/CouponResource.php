@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\TagResource\Pages;
-use App\Filament\Resources\TagResource\RelationManagers;
-use App\Models\Tag;
+use App\Filament\Resources\CouponResource\Pages;
+use App\Filament\Resources\CouponResource\RelationManagers;
+use App\Models\Coupon;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -12,24 +12,20 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Filament\Forms\Components\TextInput;
-use Filament\Tables\Columns\TextColumn;
 
-class TagResource extends Resource
+class CouponResource extends Resource
 {
-    protected static ?string $model = Tag::class;
+    protected static ?string $model = Coupon::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-tag';
     protected static ?string $navigationGroup = 'Catalogos';
-    protected static ?string $pluralModelLabel = 'Etiquetas';
+    protected static ?string $pluralModelLabel = 'Cupones';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                TextInput::make('name')
-                    ->required()
-                    ->maxLength(30)
+                //
             ]);
     }
 
@@ -37,9 +33,7 @@ class TagResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name')
-                    ->sortable()
-                    ->searchable(),
+                //
             ])
             ->filters([
                 //
@@ -64,9 +58,9 @@ class TagResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListTags::route('/'),
-            'create' => Pages\CreateTag::route('/create'),
-            'edit' => Pages\EditTag::route('/{record}/edit'),
+            'index' => Pages\ListCoupons::route('/'),
+            'create' => Pages\CreateCoupon::route('/create'),
+            'edit' => Pages\EditCoupon::route('/{record}/edit'),
         ];
     }
 }

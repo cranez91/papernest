@@ -13,12 +13,15 @@ use Filament\Tables;
 use Filament\Forms\Components\{Grid, Repeater, Select, TextInput};
 use App\Filament\Resources\SaleResource\Pages;
 use Illuminate\Support\Str;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\SelectColumn;
+
 
 class SaleResource extends Resource
 {
     protected static ?string $model = Order::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-s-building-storefront';
 
     protected static ?string $navigationLabel = 'Ventas Físicas';
 
@@ -49,7 +52,7 @@ class SaleResource extends Resource
                         ->schema([
                             Select::make('product_id')
                                 ->label('Producto')
-                                ->options(Product::all()->pluck('name', 'id'))
+                                ->options(Product::where('status', 'active')->get()->pluck('name', 'id'))
                                 ->required()
                                 ->reactive()
                                 ->afterStateUpdated(fn ($state, $set) => $set('price', Product::find($state)?->price ?? 0)),
@@ -57,7 +60,9 @@ class SaleResource extends Resource
                             TextInput::make('quantity')
                                 ->label('Cantidad')
                                 ->numeric()
-                                ->default(1)
+                                ->default(0)
+                                ->minValue(1)
+                                ->debounce(200)
                                 ->reactive()
                                 ->afterStateUpdated(function ($state, callable $set, callable $get) {
                                     $productId = $get('product_id');
@@ -151,8 +156,40 @@ class SaleResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('created_at')->label('Fecha')->dateTime(),
-                Tables\Columns\TextColumn::make('total')->money(),
+                TextColumn::make('created_at')
+                    ->label('Date')
+                    ->dateTime(),
+                
+                SelectColumn::make('status')
+                    ->searchable()
+                    ->options([
+                        'pending' => 'Pending',
+                        'confirmed' => 'Confirmed',
+                        'sent' => 'Sent',
+                        'delivered' => 'Delivered',
+                        'cancelled' => 'Cancelled',
+                        'paid' => 'Paid',
+                    ])
+                    ->disabled(),
+
+                TextColumn::make('subtotal')
+                    ->numeric(decimalPlaces: 2)
+                    ->money()
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('shipping_price')
+                    ->label('Shipping')
+                    ->numeric(decimalPlaces: 2)
+                    ->money()
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('total')
+                    ->numeric(decimalPlaces: 2)
+                    ->money()
+                    ->searchable()
+                    ->sortable(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -176,12 +213,12 @@ class SaleResource extends Resource
         $set('total', $subtotal);
     }
 
-    public static function beforeCreate($record, $data): void
+    public static function beforeSave($record, $data)
     {
-        $record->source = 'admin';
-        $record->status = 'paid';
-        $record->id = (string) Str::uuid();
-        $record->subtotal = collect($data['items'] ?? [])->sum(fn ($item) => ($item['price'] ?? 0) * ($item['quantity'] ?? 0));
-        $record->total = $record->subtotal;
+        $subtotal = collect($data['items'] ?? [])
+            ->sum(fn ($item) => ($item['price'] ?? 0) * ($item['quantity'] ?? 0));
+
+        $record->subtotal = $subtotal;
+        $record->total = $subtotal;
     }
 }

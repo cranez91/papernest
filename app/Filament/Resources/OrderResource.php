@@ -23,7 +23,7 @@ class OrderResource extends Resource
 {
     protected static ?string $model = Order::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-truck';
     protected static ?string $navigationLabel = 'Ordenes';
     protected static ?string $navigationGroup = 'Ordenes y Ventas';
 
@@ -91,9 +91,10 @@ class OrderResource extends Resource
                             TextInput::make('quantity')
                                 ->label('Cantidad')
                                 ->numeric()
-                                ->default(1)
+                                ->default(0)
+                                ->minValue(1)
                                 ->required()
-                                ->debounce(1000)
+                                ->debounce(200)
                                 ->reactive()
                                 ->afterStateUpdated(function ($state, callable $set, callable $get) {
                                     $productId = $get('product_id');
@@ -219,12 +220,26 @@ class OrderResource extends Resource
                 
                 SelectColumn::make('status')
                     ->options([
-                        'pending' => 'En espera',
-                        'confirmed' => 'Confirmado',
-                        'sent' => 'Enviada',
-                        'delivered' => 'Entregada',
-                        'cancelled' => 'Cancelada',
+                        'pending' => 'Pending',
+                        'confirmed' => 'Confirmed',
+                        'sent' => 'Sent',
+                        'delivered' => 'Delivered',
+                        'cancelled' => 'Cancelled',
+                        'paid' => 'Paid',
                     ])
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('subtotal')
+                    ->numeric(decimalPlaces: 2)
+                    ->money()
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('shipping_price')
+                    ->label('Shipping')
+                    ->numeric(decimalPlaces: 2)
+                    ->money()
                     ->searchable()
                     ->sortable(),
 
@@ -239,6 +254,7 @@ class OrderResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

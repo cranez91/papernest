@@ -17,10 +17,12 @@ class Order extends Model
         'email',
         'address',
         'status',
+        'source',
         'payment_type',
         'subtotal',
         'shipping_price',
         'total',
+        'coupon_id',
     ];
 
     protected static function booted()
@@ -29,11 +31,21 @@ class Order extends Model
             if (empty($order->id)) {
                 $order->id = (string) Str::uuid();
             }
+            if (empty($order->customer_name) && empty($order->whatsapp)) {
+                $order->status = 'paid';
+                $order->source = 'admin';
+                $order->update();
+            }
         });
 
         static::saved(function ($order) {
             $order->updateTotalPrice();
         });
+    }
+
+    public function coupon()
+    {
+        return $this->belongsTo(Coupon::class);
     }
 
     public function user()
