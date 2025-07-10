@@ -6,6 +6,7 @@ use App\Filament\Resources\OrderResource\Pages;
 use App\Filament\Resources\OrderResource\RelationManagers;
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\Coupon;
 use App\Models\ShoppingCartItem;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -18,6 +19,8 @@ use Filament\Forms\Components\{TextInput, Select, Repeater, Hidden, Grid};
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Set;
+use Filament\Tables\Enums\ActionsPosition;
+
 
 class OrderResource extends Resource
 {
@@ -31,7 +34,7 @@ class OrderResource extends Resource
     {
         return $form
             ->schema([
-                Grid::make(3)->schema([
+                Grid::make(4)->schema([
                     TextInput::make('customer_name')
                         ->label('Customer Name')
                         ->required(),
@@ -45,8 +48,7 @@ class OrderResource extends Resource
 
                     TextInput::make('email')
                         ->label('E-mail')
-                        ->email()
-                        ->required(),
+                        ->email(),
 
                     TextInput::make('address')
                         ->label('Address')
@@ -71,6 +73,26 @@ class OrderResource extends Resource
                         ])
                         ->default('cash_on_delivery')
                         ->required(),
+                    
+                    Select::make('coupon_id')
+                        ->label('Discount')
+                        ->options(function (callable $get) {
+                            $subtotal = collect($get('items') ?? [])
+                                ->sum(fn ($item) => ($item['price'] ?? 0) * ($item['quantity'] ?? 0));
+
+                            return Coupon::where('status', 'active')
+                                ->whereDate('start_date', '<=', now('America/Mexico_City')->timezone('UTC'))
+                                ->whereDate('end_date', '>=', now('America/Mexico_City')->timezone('UTC'))
+                                ->where('min_total', '<=', $subtotal)
+                                ->pluck('description', 'id');
+                        })
+                        ->searchable()
+                        ->reactive()
+                        ->afterStateUpdated(function ($state, callable $set, callable $get) {
+                            $set('coupon_id', $state);
+
+                            OrderResource::recalculateTotals($set, $get);
+                        }),
                 ]),
 
                 Grid::make(2)->schema([
@@ -81,12 +103,19 @@ class OrderResource extends Resource
                             Select::make('product_id')
                                 ->label('Producto')
                                 ->options(Product::where('status', 'active')->get()->pluck('name', 'id'))
-                                ->searchable()
                                 ->required()
                                 ->reactive()
                                 ->afterStateUpdated(fn ($state, callable $set) =>
                                     $set('price', Product::find($state)?->price ?? 0)
                                 ),
+                            
+                            TextInput::make('price')
+                                ->label('Precio')
+                                ->numeric()
+                                ->prefix('$')
+                                ->inputMode('decimal')
+                                ->disabled()
+                                ->required(),
 
                             TextInput::make('quantity')
                                 ->label('Cantidad')
@@ -103,6 +132,8 @@ class OrderResource extends Resource
 
                                     $product = Product::find($productId);
                                     if (!$product) return;
+
+                                    $set('total_item', $product->price * $get('quantity'));
 
                                     $stock = $product->stock;
                                     $cartCount = ShoppingCartItem::where('product_id', $productId)->sum('quantity');
@@ -154,18 +185,18 @@ class OrderResource extends Resource
 
                                     $available = $product->stock - $cartCount;
 
-                                    return "Disponibles: $available en stock";
+                                    return "$available en stock";
                                 }),
 
-                            TextInput::make('price')
-                                ->label('Precio')
+                            TextInput::make('total_item')
+                                ->label('Total')
                                 ->numeric()
                                 ->prefix('$')
                                 ->inputMode('decimal')
                                 ->disabled()
-                                ->required(),
+                                ->dehydrated(false),
                         ])
-                        ->columns(3)
+                        ->columns(4)
                         ->columnSpan(2)
                         ->reorderable()
                         ->reactive()
@@ -198,6 +229,8 @@ class OrderResource extends Resource
                         ->disabled()
                         ->prefix('$')
                         ->reactive(),
+                    
+                    
                 ]),
             ]);
     }
@@ -206,9 +239,10 @@ class OrderResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('id')
-                    ->limit(8)
-                    ->searchable(),
+                TextColumn::make('created_at')
+                    ->label('Date')
+                    ->dateTimeTooltip()
+                    ->dateTime('d M Y H:i'),
 
                 TextColumn::make('customer_name')
                     ->searchable()
@@ -235,6 +269,12 @@ class OrderResource extends Resource
                     ->money()
                     ->searchable()
                     ->sortable(),
+                
+                TextColumn::make('coupon.discount_percentage')
+                    ->label('Discount')
+                    ->suffix('%')
+                    ->searchable()
+                    ->sortable(),
 
                 TextColumn::make('shipping_price')
                     ->label('Shipping')
@@ -255,7 +295,10 @@ class OrderResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\ViewAction::make(),
-            ])
+                Tables\Actions\Action::make('Enviar Whats')
+                    ->url(fn (Order $record): string => 'https://web.whatsapp.com/send?phone=+52' . $record->whatsapp . '&text=Hola, nos comunicamos para dar seguimiento a tu orden.')
+                    ->openUrlInNewTab()
+            ], position: ActionsPosition::BeforeCells)
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
@@ -281,21 +324,25 @@ class OrderResource extends Resource
 
     protected static function recalculateTotals(callable $set, callable $get): void
     {
-        $subtotal = collect($get('items') ?? [])
-            ->sum(fn ($item) => ($item['price'] ?? 0) * ($item['quantity'] ?? 0));
-
+        $items = collect($get('items') ?? []);
+        $subtotal = $items->sum(fn ($item) => ($item['price'] ?? 0) * ($item['quantity'] ?? 0));
+        $total = $subtotal;
         $shipping = $get('shipping_price') ?? 0;
 
+        if ($get('coupon_id')) {
+            $coupon = Coupon::find($get('coupon_id'));
+            if (
+                $coupon &&
+                $coupon->status === 'active' &&
+                now('America/Mexico_City')->timezone('UTC')->between($coupon->start_date, $coupon->end_date) &&
+                $subtotal >= $coupon->min_total
+            ) {
+                $discount = ($subtotal * $coupon->discount_percentage) / 100;
+                $total -= $discount;
+            }
+        }
+
         $set('subtotal', $subtotal);
-        $set('total', $subtotal + $shipping);
-    }
-
-    public static function beforeSave($record, $data)
-    {
-        $subtotal = collect($data['items'] ?? [])
-            ->sum(fn ($item) => ($item['price'] ?? 0) * ($item['quantity'] ?? 0));
-
-        $record->subtotal = $subtotal;
-        $record->total = $subtotal + ($data['shipping_price'] ?? 0);
+        $set('total', $total + $shipping);
     }
 }

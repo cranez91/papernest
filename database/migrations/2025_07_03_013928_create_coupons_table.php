@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('code', 10)->unique();
             $table->string('description', 80)->nullable();
             $table->enum('status', ['active', 'inactive'])->default('inactive');
+            $table->decimal('min_total', 10, 7);
 
             $table->date('start_date');
             $table->date('end_date');

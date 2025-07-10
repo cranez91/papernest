@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\Coupon;
 use App\Models\ShoppingCartItem;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -15,6 +16,7 @@ use App\Filament\Resources\SaleResource\Pages;
 use Illuminate\Support\Str;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\SelectColumn;
+use Illuminate\Support\Facades\Log;
 
 
 class SaleResource extends Resource
@@ -43,6 +45,26 @@ class SaleResource extends Resource
                         ])
                         ->default('cash_on_delivery')
                         ->required(),
+                    
+                    Select::make('coupon_id')
+                        ->label('Discount')
+                        ->options(function (callable $get) {
+                            $subtotal = collect($get('items') ?? [])
+                                ->sum(fn ($item) => ($item['price'] ?? 0) * ($item['quantity'] ?? 0));
+
+                            return Coupon::where('status', 'active')
+                                ->whereDate('start_date', '<=', now('America/Mexico_City')->timezone('UTC'))
+                                ->whereDate('end_date', '>=', now('America/Mexico_City')->timezone('UTC'))
+                                ->where('min_total', '<=', $subtotal)
+                                ->pluck('description', 'id');
+                        })
+                        ->searchable()
+                        ->reactive()
+                        ->afterStateUpdated(function ($state, callable $set, callable $get) {
+                            $set('coupon_id', $state);
+
+                            SaleResource::recalculateTotals($set, $get);
+                        }),
                 ]),
 
                 Grid::make(1)->schema([
@@ -57,12 +79,20 @@ class SaleResource extends Resource
                                 ->reactive()
                                 ->afterStateUpdated(fn ($state, $set) => $set('price', Product::find($state)?->price ?? 0)),
 
+                            TextInput::make('price')
+                                ->label('Precio')
+                                ->numeric()
+                                ->disabled()
+                                ->dehydrated(true)
+                                ->required(),
+
                             TextInput::make('quantity')
                                 ->label('Cantidad')
                                 ->numeric()
                                 ->default(0)
                                 ->minValue(1)
                                 ->debounce(200)
+                                ->dehydrated(true)
                                 ->reactive()
                                 ->afterStateUpdated(function ($state, callable $set, callable $get) {
                                     $productId = $get('product_id');
@@ -71,6 +101,8 @@ class SaleResource extends Resource
 
                                     $product = Product::find($productId);
                                     if (!$product) return;
+
+                                    $set('total_item', $product->price * $get('quantity'));
 
                                     $stock = $product->stock;
                                     $cartCount = ShoppingCartItem::where('product_id', $productId)->sum('quantity');
@@ -122,16 +154,20 @@ class SaleResource extends Resource
 
                                     $available = $product->stock - $cartCount;
 
-                                    return "Disponibles: $available en stock";
+                                    return "$available en stock";
                                 }),
-
-                            TextInput::make('price')
-                                ->label('Precio')
+                            
+                            TextInput::make('total_item')
+                                ->label('Total')
                                 ->numeric()
+                                ->prefix('$')
+                                ->inputMode('decimal')
                                 ->disabled()
-                                ->required(),
+                                ->dehydrated(false),
+
+                            
                         ])
-                        ->columns(3)
+                        ->columns(4)
                         ->reorderable()
                         ->defaultItems(0) // 👈 no mostrar ningún item al inicio
                         ->createItemButtonLabel('Agregar producto')
@@ -141,13 +177,15 @@ class SaleResource extends Resource
                 Grid::make(2)->schema([
                     TextInput::make('subtotal')
                         ->label('Subtotal')
-                        ->disabled()
-                        ->dehydrated(false),
+                        ->numeric()
+                        ->prefix('$')
+                        ->disabled(),
 
                     TextInput::make('total')
                         ->label('Total')
-                        ->disabled()
-                        ->dehydrated(false),
+                        ->numeric()
+                        ->prefix('$')
+                        ->disabled(),
                 ])
             ]);
     }
@@ -178,18 +216,17 @@ class SaleResource extends Resource
                     ->searchable()
                     ->sortable(),
 
-                TextColumn::make('shipping_price')
-                    ->label('Shipping')
-                    ->numeric(decimalPlaces: 2)
-                    ->money()
-                    ->searchable()
-                    ->sortable(),
-
                 TextColumn::make('total')
                     ->numeric(decimalPlaces: 2)
                     ->money()
                     ->searchable()
                     ->sortable(),
+                
+                TextColumn::make('coupon.discount_percentage')
+                    ->label('Discount')
+                    ->suffix('%')
+                    ->searchable()
+                    ->sortable()
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -208,17 +245,24 @@ class SaleResource extends Resource
 
     protected static function recalculateTotals(callable $set, callable $get): void
     {
-        $subtotal = collect($get('items') ?? [])->sum(fn ($item) => ($item['price'] ?? 0) * ($item['quantity'] ?? 0));
+        $items = collect($get('items') ?? []);
+        $subtotal = $items->sum(fn ($item) => ($item['price'] ?? 0) * ($item['quantity'] ?? 0));
+        $total = $subtotal;
+
+        if ($get('coupon_id')) {
+            $coupon = Coupon::find($get('coupon_id'));
+            if (
+                $coupon &&
+                $coupon->status === 'active' &&
+                now('America/Mexico_City')->timezone('UTC')->between($coupon->start_date, $coupon->end_date) &&
+                $subtotal >= $coupon->min_total
+            ) {
+                $discount = ($subtotal * $coupon->discount_percentage) / 100;
+                $total -= $discount;
+            }
+        }
+        
         $set('subtotal', $subtotal);
-        $set('total', $subtotal);
-    }
-
-    public static function beforeSave($record, $data)
-    {
-        $subtotal = collect($data['items'] ?? [])
-            ->sum(fn ($item) => ($item['price'] ?? 0) * ($item['quantity'] ?? 0));
-
-        $record->subtotal = $subtotal;
-        $record->total = $subtotal;
+        $set('total', $total);
     }
 }

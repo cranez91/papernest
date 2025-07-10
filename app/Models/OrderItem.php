@@ -39,12 +39,12 @@ class OrderItem extends Model
             }
         });
 
-        static::saved(function ($item) {
+        /*static::saved(function ($item) {
             $item->order->updateTotalPrice();
         });
 
         static::deleted(function ($item) {
             $item->order->updateTotalPrice();
-        });
+        });*/
     }
 }

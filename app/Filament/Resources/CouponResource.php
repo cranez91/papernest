@@ -12,6 +12,12 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\DatePicker;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\SelectColumn;
 
 class CouponResource extends Resource
 {
@@ -25,7 +31,40 @@ class CouponResource extends Resource
     {
         return $form
             ->schema([
-                //
+                TextInput::make('code')
+                    ->required()
+                    ->minLength(5)
+                    ->maxLength(10),
+
+                Textarea::make('description')
+                    ->rows(3)
+                    ->required(),
+
+                Select::make('status')
+                    ->required()
+                    ->default('inactive')
+                    ->options([
+                        'active' => 'Active',
+                        'inactive' => 'Inactive',
+                ]),
+
+                TextInput::make('min_total')
+                    ->numeric()
+                    ->minValue(1)
+                    ->required(),
+
+                DatePicker::make('start_date')
+                    ->required(),
+
+                DatePicker::make('end_date')
+                    ->required(),
+                
+                TextInput::make('discount_percentage')
+                    ->numeric()
+                    ->suffix('%')
+                    ->minValue(1)
+                    ->maxValue(100)
+                    ->required(),
             ]);
     }
 
@@ -33,7 +72,26 @@ class CouponResource extends Resource
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('code')
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('discount_percentage')
+                    ->searchable()
+                    ->suffix('%')
+                    ->sortable(),
+
+                TextColumn::make('min_total')
+                    ->prefix('$')
+                    ->numeric()
+                    ->sortable(),
+                
+                SelectColumn::make('status')
+                    ->searchable()
+                    ->options([
+                        'active' => 'Active',
+                        'inactive' => 'Inactive',
+                ]),
             ])
             ->filters([
                 //

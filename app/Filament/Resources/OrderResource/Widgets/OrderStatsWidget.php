@@ -5,6 +5,8 @@ namespace App\Filament\Resources\OrderResource\Widgets;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use App\Models\Order;
+use Illuminate\Support\Facades\DB;
+
 
 class OrderStatsWidget extends BaseWidget
 {
@@ -16,7 +18,8 @@ class OrderStatsWidget extends BaseWidget
         $webRevenue = Order::where('status', 'paid')
             ->where('source', 'web')
             ->whereBetween('created_at', [$start, $end])
-            ->sum('subtotal');
+            ->select(DB::raw('SUM(total - shipping_price) as revenue'))
+            ->value('revenue');
 
         return [
             Stat::make('Ingresos Hoy', '$' . number_format($webRevenue, 2))

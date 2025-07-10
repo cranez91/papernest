@@ -16,7 +16,7 @@ class SaleStatsWidget extends BaseWidget
         $saleRevenue = Order::where('status', 'paid')
             ->where('source', 'admin')
             ->whereBetween('created_at', [$start, $end])
-            ->sum('subtotal');
+            ->sum('total');
 
         return [
             Stat::make('Ingresos Hoy', '$' . number_format($saleRevenue, 2))

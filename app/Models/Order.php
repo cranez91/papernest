@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 
+
 class Order extends Model
 {
     public $incrementing = false; // 👈 importante para UUID
@@ -31,6 +32,7 @@ class Order extends Model
             if (empty($order->id)) {
                 $order->id = (string) Str::uuid();
             }
+
             if (empty($order->customer_name) && empty($order->whatsapp)) {
                 $order->status = 'paid';
                 $order->source = 'admin';
@@ -38,9 +40,9 @@ class Order extends Model
             }
         });
 
-        static::saved(function ($order) {
+        /*static::saved(function ($order) {
             $order->updateTotalPrice();
-        });
+        });*/
     }
 
     public function coupon()
@@ -60,9 +62,27 @@ class Order extends Model
 
     public function updateTotalPrice()
     {
-        $this->subtotal = $this->items()->sum(DB::raw('quantity * price'));
-        $this->total = $this->subtotal + $this->shipping_price;
-        $this->saveQuietly();
+        $shipping = $this->shipping_price ?? 0;
+        $subtotal = $this->getSubtotal();
+        $total = $subtotal;
+
+        $coupon = $this->coupon;
+        if ($coupon) {
+            $now = now('America/Mexico_City')->timezone('UTC');
+
+            if ($coupon->status === 'active' &&
+                $now->between($coupon->start_date, $coupon->end_date) &&
+                $subtotal >= $coupon->min_total
+            ) {
+                $discount_amount = ($subtotal * $coupon->discount_percentage) / 100;
+                $total -= $discount_amount;
+            }
+        }
+
+        $total += $shipping;
+
+        $this->subtotal = $subtotal;
+        $this->total = $total;
     }
 
     public function updateProductsStock() 
@@ -73,5 +93,11 @@ class Order extends Model
             $product->stock = max(0, $product->stock - $item->quantity);
             $product->save();
         }
+    }
+
+    private function getSubtotal(): int
+    {
+        return $this->items()
+            ->sum(DB::raw('quantity * price'));
     }
 }
