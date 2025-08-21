@@ -26,6 +26,11 @@ class Product extends Model
         'stock'
     ];
 
+    protected $appends = [
+        'category_name',
+        'short_name',
+    ];
+
     protected static function boot()
     {
         parent::boot();
@@ -57,5 +62,46 @@ class Product extends Model
     public function tags()
     {
         return $this->belongsToMany(Tag::class);
+    }
+
+    public function scopeBasicInfo($query) {
+        return $query->select([
+            'sku',
+            'name',
+            'slug',
+            'brand',
+            'price',
+            'stock',
+            'photo',
+            'category_id',
+            'attachment_file_name',
+            'description',
+        ]);
+    }
+
+    public function scopeActiveItems($query) 
+    {
+        return $query->where('status', 'active');
+    }
+
+    public function scopeFilterByName($query, $filter) 
+    {
+        $keywords = explode(' ', $filter);
+        
+        return $query->where(function ($query) use ($keywords) {
+            foreach ($keywords as $keyword) {
+                $query->where('name', 'like', '%' . $keyword . '%');
+            }
+        });
+    }
+
+    public function getCategoryNameAttribute()
+    {
+        return $this->category?->name;
+    }
+
+    public function getShortNameAttribute()
+    {
+        return Str::limit($this->name, 22, '...');
     }
 }

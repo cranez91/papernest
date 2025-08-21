@@ -91,7 +91,7 @@ class SaleResource extends Resource
                                 ->numeric()
                                 ->default(0)
                                 ->minValue(1)
-                                ->debounce(200)
+                                ->debounce(100)
                                 ->dehydrated(true)
                                 ->reactive()
                                 ->afterStateUpdated(function ($state, callable $set, callable $get) {
@@ -100,30 +100,17 @@ class SaleResource extends Resource
                                     if (!$productId) return;
 
                                     $product = Product::find($productId);
+                                    
                                     if (!$product) return;
-
-                                    $set('total_item', $product->price * $get('quantity'));
-
                                     $stock = $product->stock;
                                     $cartCount = ShoppingCartItem::where('product_id', $productId)->sum('quantity');
                                     $available = $stock - $cartCount;
-
-                                    $newQuantity = min($state, $available);
-
-                                    // Solo seteamos si hay diferencia
-                                    if ($state != $newQuantity) {
-                                        $set('quantity', $newQuantity);
-
-                                        // Recalcular después de un micro-delay forzado
-                                        \Filament\Support\Facades\FilamentView::registerRenderHook(
-                                            'scripts::after',
-                                            function () use ($set, $get) {
-                                                SaleResource::recalculateTotals($set, $get);
-                                            }
-                                        );
-                                    } else {
-                                        SaleResource::recalculateTotals($set, $get);
+                                    // Solo ajusta la cantidad si es necesario
+                                    if ($state > $available) {
+                                        $set('quantity', $available);
                                     }
+                                    $set('total_item', $product->price * $get('quantity'));
+                                    SaleResource::recalculateTotals($set, $get);
                                 })
                                 ->rule(function (callable $get) {
                                     $productId = $get('product_id');
