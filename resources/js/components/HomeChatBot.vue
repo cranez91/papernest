@@ -83,7 +83,7 @@
 						return;
 					}
 
-					this.appendResults(data.products);
+					this.appendResults(data.products, msg);
 				} catch (error) {
 					console.error('Ocurrió un error en la petición:', error);
 				}
@@ -94,7 +94,7 @@
 				this.chatbox += `<div><strong>Bot:</strong> ${botMsg}</div>`;
 			},
 
-			appendResults(products) {
+			appendResults(products, msg) {
 				let message = 'Encontré los siguientes productos: <br/> <hr/>';
 				const hasMore = products.length > 3;
 				const maxIterations = hasMore ? 3 : products.length;
@@ -113,7 +113,8 @@
 				}
 
 				if (hasMore) {
-					message += `Si quieres ver el resto de articulos: <a href='#' target='_blank'> <strong>> Ver Más <</strong> </a>`;
+					const searchLink = `/articulos?search=${msg}`;
+					message += `Si quieres ver el resto de articulos: <a href='${searchLink}' target='_blank'> <strong>> Ver Más <</strong> </a>`;
 				}
 
 				this.chatbox += `<div><strong>Bot:</strong> ${message}</div>`;

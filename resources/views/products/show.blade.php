@@ -9,13 +9,6 @@
             <img src="/images/papeleria-producto-banner.jpg"
                  alt="Banner producto" 
                  class="w-full h-full object-cover">
-            
-            <!-- Texto encima del banner -->
-            <!--div class="absolute inset-0 flex items-center justify-center">
-                <span class="text-2xl font-bold text-white bg-black/40 px-4 py-2 rounded-lg">
-                    Detalle del Producto
-                </span>
-            </div-->
         </div>
 
         <product-detail data-product='@json($product)'>

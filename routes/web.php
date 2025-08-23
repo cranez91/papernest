@@ -25,7 +25,7 @@ Route::get('/cart', function () {
 });
 
 Route::get('/articulo/{sku?}', [ProductController::class, 'show'])->name('products.detail');
-Route::get('/articulos/{filter?}', [ProductController::class, 'index'])->name('products.list');
+Route::get('/articulos/{categoria?}', [ProductController::class, 'index'])->name('products.list');
 
 Route::middleware([Authenticate::class])
     ->prefix('admin')
