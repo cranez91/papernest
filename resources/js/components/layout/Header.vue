@@ -1,6 +1,4 @@
 <template>
-    <!-- Include this script tag or install `@tailwindplus/elements` via npm: -->
-    <!-- <script src="https://cdn.jsdelivr.net/npm/@tailwindplus/elements@1" type="module"></script> -->
     <div class="bg-white">
         <header class="relative top-0 z-50">
             <nav aria-label="Global"
@@ -37,21 +35,28 @@
                     </button>
                 </div>
                 <div class="hidden lg:flex lg:gap-x-12">
-                    <a href="#"
-                       class="text-sm/6 font-semibold text-gray-900">
+                    <a class="text-sm/6 font-semibold text-gray-900"
+                       :href="route('home')"
+                       :active="route().current('products.list')">
                        Inicio
                     </a>
-                    <a href="#"
-                       class="text-sm/6 font-semibold text-gray-900">
-                       Ordenar
+
+                    <a class="text-sm/6 font-semibold text-gray-900"
+                       :href="route('products.list')"
+                       :active="route().current('products.list')">
+                        Articulos
                     </a>
-                    <a href="#"
-                       class="text-sm/6 font-semibold text-gray-900">
-                       Contacto
+
+                    <a class="text-sm/6 font-semibold text-gray-900"
+                       :href="route('contact')"
+                       :active="route().current('contact')">
+                        Contacto
                     </a>
-                    <a href="#"
-                       class="text-sm/6 font-semibold text-gray-900">
-                       Acerca de
+
+                    <a class="text-sm/6 font-semibold text-gray-900"
+                       :href="route('about')"
+                       :active="route().current('about')">
+                        Acerca de
                     </a>
                 </div>
                 <div class="hidden lg:flex lg:flex-1 lg:justify-end">
@@ -148,13 +153,6 @@
     </div>
 </template>
 
-<script>
-    export default {
-        name: 'Header',
-        methods: {
-            isActive: function(route) {
-                return window.location.pathname === route
-            }
-        }
-    }
+<script setup>
+
 </script>
