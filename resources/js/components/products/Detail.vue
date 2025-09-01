@@ -46,27 +46,8 @@
     </div>
 </template>
 
-<script>
-    import { ref } from "vue";
-
-    export default {
-        data () {
-			return {
-				
-			};
-		},
-        methods:  {
-            addToCart() {
-                // Aquí va tu lógica para agregar al carrito
-                console.log("Producto agregado:", props.product);
-                alert(`Agregado ${props.product.name} al carrito`);
-            }
-        },
-        props: {
-            product: {
-                type: Object,
-                required: true,
-            }
-        }
-    }
+<script setup>
+    const props = defineProps({
+        product: Object
+    })
 </script>

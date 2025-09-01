@@ -6,10 +6,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Models\Product;
+use Inertia\Inertia;
 
 class ProductController extends Controller
 {
-    public function index(Request $request, string $categoria = '') {
+    public function index(Request $request, string $category = '') {
         $sortByColumn = $request->filled('sortBy') ? $request->input('sortBy') : 'created_at';
         $sortByOrder = $request->filled('sortBy') ? $request->input('order') : 'desc';
 
@@ -18,22 +19,24 @@ class ProductController extends Controller
             ->with(['category:id,name'])
             ->orderBy($sortByColumn, $sortByOrder)
             ->when($request->filled('search'), fn($q) => $q->filterByName($request->search))
-            ->when($categoria, function($query) use ($categoria) {
-                $query->whereHas('category', function($query) use ($categoria) {
-                    $query->where('sku', $categoria);
+            ->when($category, function($query) use ($category) {
+                $query->whereHas('category', function($query) use ($category) {
+                    $query->where('sku', $category);
                 });
             })
-            ->paginate(20);
-        
-        // Mantener los parámetros
-        $products->appends($request->query());
+            ->paginate(2)
+            ->withQueryString();
         
         $categories = Category::orderBy('name', 'asc')
             ->get(['id', 'sku', 'name']);
         
-        $selected_category = $categoria ? $categoria : null;
+        $selected_category = $category ? $category : '';
 
-        return view('products.index', compact('products', 'categories', 'selected_category'));
+        return Inertia::render('Products', [
+            'products' => $products->toArray(),
+            'categories' => $categories,
+            'selectedCategory' => $selected_category,
+        ]);
     }
 
     public function show(string $sku = '') {
@@ -47,6 +50,8 @@ class ProductController extends Controller
             return redirect()->route('home');
         }
 
-        return view('products.show', compact('product'));
+        return Inertia::render('ProductDetail', [
+            'product' => $product
+        ]);
     }
 }

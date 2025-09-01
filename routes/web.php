@@ -10,11 +10,13 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/contact', function () {
     return view('contact');
-});
+})
+->name('contact');
 
 Route::get('/about', function () {
     return view('about');
-});
+})
+->name('about');
 
 Route::get('/order', function () {
     return view('order');
@@ -25,7 +27,7 @@ Route::get('/cart', function () {
 });
 
 Route::get('/articulo/{sku?}', [ProductController::class, 'show'])->name('products.detail');
-Route::get('/articulos/{categoria?}', [ProductController::class, 'index'])->name('products.list');
+Route::get('/articulos/{category?}', [ProductController::class, 'index'])->name('products.list');
 
 Route::middleware([Authenticate::class])
     ->prefix('admin')

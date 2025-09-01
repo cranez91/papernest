@@ -76,7 +76,7 @@
 				this.form.product = '';
 
 				try {
-					const response = await axios.post('/chat/find', {search: msg});
+					const response = await axios.post('/api/chat/find', {search: msg});
 					const data = response.data;
 					if (data && !data.products.length) {
 						this.notFoundMessage();
