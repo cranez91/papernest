@@ -24,7 +24,7 @@ class ProductController extends Controller
                     $query->where('sku', $category);
                 });
             })
-            ->paginate(2)
+            ->paginate(20)
             ->withQueryString();
         
         $categories = Category::orderBy('name', 'asc')
