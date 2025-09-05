@@ -107,14 +107,14 @@
                     + `🏷️ <strong>Marca</strong>: ${product.brand}<br/>`
                     + `💲 <strong>Precio</strong>: ${product.price}<br/>`
                     + `📦 <strong>En almacén</strong>: ${product.stock}<br/>`
-                    + `Para ver detalle: <a href='${link}' target='_blank'> <strong>> Click aquí <</strong> </a> <br/> <hr/>`;
+                    + `Para ver detalle: <a href='${link}'> <strong>> Click aquí <</strong> </a> <br/> <hr/>`;
 
 					message += productsDetail;
 				}
 
 				if (hasMore) {
 					const searchLink = `/articulos?search=${msg}`;
-					message += `Si quieres ver el resto de articulos: <a href='${searchLink}' target='_blank'> <strong>> Ver Más <</strong> </a>`;
+					message += `Si quieres ver el resto de articulos: <a href='${searchLink}'> <strong>> Ver Más <</strong> </a>`;
 				}
 
 				this.chatbox += `<div><strong>Bot:</strong> ${message}</div>`;
