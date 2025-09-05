@@ -14,6 +14,7 @@ return new class extends Migration {
             $table->text('description')->nullable();
             $table->string('location')->nullable(); // Dirección
             $table->string('whatsapp_contact')->nullable();
+            $table->decimal('shipping_price', 10, 2)->nullable();
             $table->json('business_hours')->nullable();
             $table->decimal('latitude', 10, 7)->nullable();
             $table->decimal('longitude', 10, 7)->nullable();
