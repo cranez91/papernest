@@ -46,15 +46,25 @@
         }
     })
 
-    const addProduct = () => {
-        cartStore.addToCart(props.product.sku);
+    const addProduct = async () => {
+        try {
+            await cartStore.addToCart(props.product.sku);
 
-        Swal.fire({
-            icon: 'success',
-            title: 'Añadido al carrito',
-            text: 'El producto ha sido agregado al carrito.',
-            showConfirmButton: true,
-            allowOutsideClick: false
-        });
+            Swal.fire({
+                icon: 'success',
+                title: 'Añadido al carrito',
+                text: 'El producto ha sido agregado al carrito.',
+                showConfirmButton: true,
+                allowOutsideClick: false
+            });
+        } catch (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'No se pudo agregar el producto al carrito. Intenta de nuevo.',
+                showConfirmButton: true,
+                allowOutsideClick: false,
+            });
+        }
     }
 </script>
