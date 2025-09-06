@@ -134,11 +134,12 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700
                                       dark:text-gray-300">
-                            Nombre Completo *
+                            Nombre *
                         </label>
                         <input class="mt-1 w-full border rounded-md px-3 py-2 text-sm
                                       dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
                                type="text"
+                               placeholder="Nombre(s) y Apellido(s)"
                                required
                                v-model="customer.customer_name"/>
                     </div>
@@ -160,6 +161,7 @@
                         <input class="mt-1 w-full border rounded-md px-3 py-2 text-sm
                                       dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
                                type="text"
+                               placeholder="Número a 10 dígitos"
                                required
                                v-model="customer.whatsapp"/>
                     </div>
@@ -168,13 +170,34 @@
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
                             Domicilio *
                         </label>
-                        <textarea class="mt-1 w-full border rounded-md px-3 py-2 text-sm
-                                        dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
-                                  rows="3"
-                                  placeholder="Incluye: Calle, Número, Colonia y Entre Calles"
-                                  required
-                                  v-model="customer.address">
-                        </textarea>
+                        <input class="mt-1 w-full border rounded-md px-3 py-2 text-sm
+                                      dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
+                               type="text"
+                               placeholder="Calle y Número"
+                               required
+                               v-model="customer.address"/>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Colonia *
+                        </label>
+                        <input class="mt-1 w-full border rounded-md px-3 py-2 text-sm
+                                      dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
+                               type="text"
+                               required
+                               v-model="customer.neighborhood"/>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Entre Calles *
+                        </label>
+                        <input class="mt-1 w-full border rounded-md px-3 py-2 text-sm
+                                      dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
+                               type="text"
+                               required
+                               v-model="customer.streets"/>
                     </div>
 
                     <button type="submit"
@@ -191,8 +214,9 @@
 </template>
 
 <script setup>
-    import { reactive, computed } from "vue";
-    import { useCartStore } from "@/stores/cartStore.js";
+    import { reactive, computed } from 'vue';
+    import { useCartStore } from '@/stores/cartStore.js';
+    import Swal from 'sweetalert2';
 
     const cartStore = useCartStore();
     const cart = computed(() => cartStore.cart)
@@ -233,13 +257,19 @@
     const productsInCart = computed(() => cartStore.totalCartItems);
 
     const customer = reactive({
-        customer_name: "",
-        email: "",
-        whatsapp: "",
-        address: "",
+        customer_name: '',
+        email: '',
+        whatsapp: '',
+        address: '',
+        neighborhood: '',
+        streets: ''
     });
 
     const submitOrder = () => {
+        if (!validForm()) {
+            return;
+        }
+
         const order = {
             customer: { ...customer },
             items: cart,
@@ -250,5 +280,42 @@
 
         console.log("Order submitted:", order);
         // Aquí podrías hacer una petición a tu backend con Inertia.post() o Axios
+    }
+
+    const validForm = () => {
+        let valid = true;
+
+        // Validación básica: todos excepto email son obligatorios
+        if (!customer.customer_name ||
+            !customer.whatsapp ||
+            !customer.address ||
+            !customer.neighborhood ||
+            !customer.streets) {
+
+            Swal.fire({
+                icon: 'warning',
+                title: 'Campos requeridos',
+                text: 'Por favor completa todos los campos obligatorios.',
+                confirmButtonText: 'Ok',
+                allowOutsideClick: false
+            });
+
+            valid = false;
+        }
+
+        // Validar email si no está vacío
+        if (customer.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customer.email)) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Email inválido',
+                text: 'Por favor ingresa un email válido.',
+                confirmButtonText: 'Ok',
+                allowOutsideClick: false
+            });
+
+            valid = false;
+        }
+
+        return valid;
     }
 </script>
