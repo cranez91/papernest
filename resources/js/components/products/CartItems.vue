@@ -1,6 +1,6 @@
 <template>
-    <a :href="route('cart')"
-       class="text-sm/6 font-semibold text-gray-900">
+    <Link :href="route('cart')"
+          class="text-sm/6 font-semibold text-gray-900">
         <svg viewBox="0 0 24 24"
              fill="none"
              stroke="currentColor"
@@ -23,7 +23,7 @@
         <span class="sr-only">
             items in cart, view bag
         </span>
-    </a>
+    </Link>
 </template>
 
 <script setup>

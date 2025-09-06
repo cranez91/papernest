@@ -3,7 +3,7 @@ import '../css/app.css';
 import '@tailwindplus/elements'
 
 import { createApp, h } from 'vue';
-import { createInertiaApp } from '@inertiajs/vue3';
+import { createInertiaApp, Link } from '@inertiajs/vue3';
 import { createPinia } from 'pinia';
 import { resolvePageComponent} from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
@@ -31,6 +31,7 @@ createInertiaApp({
     app.component('Footer', Footer)
     app.component('add-to-cart', AddToCartButton)
     app.component('cart-items', CartItems)
+    app.component('Link', Link)
 
     app.mount(el)
   },

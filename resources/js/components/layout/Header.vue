@@ -2,7 +2,8 @@
     <div class="bg-white">
         <header class="relative top-0 z-50">
             <nav aria-label="Global"
-                 class="flex items-center justify-between p-3 lg:px-8 sticky top-0 z-50">
+                 class="flex bg-amber-100 items-center justify-between p-3
+                        lg:px-8 fixed top-0 start-0 end-0">
                 <div class="flex lg:flex-1">
                     <a href="#"
                        class="-m-1.5 p-1.5">
@@ -36,29 +37,25 @@
                     </button>
                 </div>
                 <div class="hidden lg:flex lg:gap-x-12">
-                    <a class="text-sm/6 font-semibold text-gray-900"
-                       :href="route('home')"
-                       :active="route().current('products.list')">
+                    <Link class="text-sm/6 font-semibold text-gray-900"
+                          :href="route('home')">
                        Inicio
-                    </a>
+                    </Link>
 
-                    <a class="text-sm/6 font-semibold text-gray-900"
-                       :href="route('products.list')"
-                       :active="route().current('products.list')">
+                    <Link class="text-sm/6 font-semibold text-gray-900"
+                          :href="route('products.list')">
                         Articulos
-                    </a>
+                    </Link>
 
-                    <a class="text-sm/6 font-semibold text-gray-900"
-                       :href="route('contact')"
-                       :active="route().current('contact')">
+                    <Link class="text-sm/6 font-semibold text-gray-900"
+                          :href="route('contact')">
                         Contacto
-                    </a>
+                    </Link>
 
-                    <a class="text-sm/6 font-semibold text-gray-900"
-                       :href="route('about')"
-                       :active="route().current('about')">
+                    <Link class="text-sm/6 font-semibold text-gray-900"
+                          :href="route('about')">
                         Acerca de
-                    </a>
+                    </Link>
                 </div>
                 <div class="hidden lg:flex lg:flex-1 lg:justify-end">
                     <cart-items/>
@@ -102,28 +99,28 @@
                         <div class="mt-6 flow-root">
                             <div class="-my-6 divide-y divide-gray-500/10">
                                 <div class="space-y-2 py-6">
-                                    <a href="#"
-                                       class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">
+                                    <Link :href="route('home')"
+                                          class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">
                                         Inicio
-                                    </a>
-                                    <a href="#"
+                                    </Link>
+                                    <Link :href="route('products.list')"
                                        class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">
-                                        Ordenar
-                                    </a>
-                                    <a href="#"
+                                        Articulos
+                                    </Link>
+                                    <Link :href="route('contact')"
                                        class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">
                                         Contacto
-                                    </a>
-                                    <a href="#"
+                                    </Link>
+                                    <Link :href="route('about')"
                                        class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">
                                         Acerca de
-                                    </a>
+                                    </Link>
                                 </div>
                                 <div class="py-6">
-                                    <a href="#"
+                                    <Link :href="route('cart')"
                                        class="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">
                                         Ver Carrito
-                                    </a>
+                                    </Link>
                                 </div>
                             </div>
                         </div>

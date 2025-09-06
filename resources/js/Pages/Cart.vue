@@ -2,7 +2,7 @@
     <Header/>
 
     <!-- Banner -->
-    <div class="w-full h-60 mb-4 overflow-hidden relative">
+    <div class="w-full h-60 mt-20 mb-4 overflow-hidden relative">
         <img src="/images/papeleria-producto-banner-articulos.jpg"
              alt="Banner producto" 
              class="w-full h-full object-cover">
@@ -131,58 +131,57 @@
 
                 <form class="space-y-4"
                       @submit.prevent="submitOrder">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700
-                                  dark:text-gray-300">
-                        Nombre Completo *
-                    </label>
-                    <input class="mt-1 w-full border rounded-md px-3 py-2 text-sm
-                                  dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
-                           type="text"
-                           required
-                           v-model="customer.customer_name"/>
-                </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700
+                                      dark:text-gray-300">
+                            Nombre Completo *
+                        </label>
+                        <input class="mt-1 w-full border rounded-md px-3 py-2 text-sm
+                                      dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
+                               type="text"
+                               required
+                               v-model="customer.customer_name"/>
+                    </div>
 
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                        Email
-                    </label>
-                    <input class="mt-1 w-full border rounded-md px-3 py-2 text-sm
-                                  dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
-                           type="email"
-                           v-model="customer.email"/>
-                </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Email
+                        </label>
+                        <input class="mt-1 w-full border rounded-md px-3 py-2 text-sm
+                                      dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
+                               type="email"
+                               v-model="customer.email"/>
+                    </div>
 
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                        Whatsapp *
-                    </label>
-                    <input class="mt-1 w-full border rounded-md px-3 py-2 text-sm
-                                  dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
-                           type="text"
-                           required
-                           v-model="customer.whatsapp"/>
-                </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Whatsapp *
+                        </label>
+                        <input class="mt-1 w-full border rounded-md px-3 py-2 text-sm
+                                      dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
+                               type="text"
+                               required
+                               v-model="customer.whatsapp"/>
+                    </div>
 
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                        Domicilio *
-                    </label>
-                    <textarea class="mt-1 w-full border rounded-md px-3 py-2 text-sm
-                                     dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
-                              rows="3"
-                              placeholder="Incluye: Calle, Número, Colonia y Entre Calles"
-                              required
-                              v-model="customer.address">
-                    </textarea>
-                </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Domicilio *
+                        </label>
+                        <textarea class="mt-1 w-full border rounded-md px-3 py-2 text-sm
+                                        dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
+                                  rows="3"
+                                  placeholder="Incluye: Calle, Número, Colonia y Entre Calles"
+                                  required
+                                  v-model="customer.address">
+                        </textarea>
+                    </div>
 
-                <button
-                    type="submit"
-                    class="w-full bg-blue-600 text-white py-3 px-4 rounded-xl font-semibold hover:bg-blue-700 transition"
-                >
-                    Place Order
-                </button>
+                    <button type="submit"
+                            class="w-full bg-lime-600 text-white py-3 px-4 rounded-xl
+                                font-semibold hover:bg-lime-900 transition cursor-pointer">
+                        Ordenar
+                    </button>
                 </form>
             </div>
         </div>
