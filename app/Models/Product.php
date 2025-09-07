@@ -39,6 +39,9 @@ class Product extends Model
             if (empty($product->slug)) {
                 $product->slug = Str::slug($product->name);
             }
+            if (empty($product->sku)) {
+                $product->sku = strtoupper(Str::random(14));
+            }
         });
 
         static::updating(function ($product) {
@@ -49,7 +52,7 @@ class Product extends Model
 
         static::deleting(function ($product) {
             if ($product->photo) {
-                // Storage::disk('public')->delete("{$product->photo}");
+                Storage::disk('products')->delete("{$product->photo}");
             }
         });
     }
