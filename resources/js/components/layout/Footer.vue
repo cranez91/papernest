@@ -8,7 +8,7 @@
                         Papelería Andy
                     </h2>
                     <p class="mt-4 text-sm text-gray-400">
-                        Creamos experiencias digitales que conectan personas. Inspirados en la simplicidad y el impacto.
+                        Atención cercana, precios accesibles y productos de calidad, ¡todo en un solo lugar!
                     </p>
                 </div>
 
