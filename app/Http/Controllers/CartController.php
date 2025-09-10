@@ -101,6 +101,7 @@ class CartController extends Controller
     {
         $cart = $this->getCart($request);
         $cart->items()->delete();
+        $cart->delete();
 
         return response()->json(['success' => true]);
     }
