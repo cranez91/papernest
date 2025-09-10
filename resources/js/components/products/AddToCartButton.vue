@@ -52,8 +52,8 @@
 
             Swal.fire({
                 icon: 'success',
-                title: 'Añadido al carrito',
-                text: 'El producto ha sido agregado al carrito.',
+                title: 'Añadido',
+                text: 'El producto se agregó al carrito.',
                 showConfirmButton: true,
                 allowOutsideClick: false
             });

@@ -44,11 +44,14 @@
 
                 <!-- Detalles -->
                 <div class="flex-1">
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                    <h3 class="text-md font-semibold text-gray-900 dark:text-gray-100 mb-1">
                         {{ item.product.name }}
                     </h3>
-                    <p class="text-sm text-gray-500">
+                    <p class="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-2">
                         ${{ item.product.price }}
+                    </p>
+                    <p class="text-xs text-gray-500">
+                        {{ item.product.stock }} diponible(s) | <strong>${{ item.product.price * item.quantity }}</strong>
                     </p>
                 </div>
 
@@ -107,6 +110,25 @@
                     Resumen del Pedido
                 </h2>
 
+                <div class="flex justify-between text-sm text-gray-600 dark:text-gray-300 mb-2"
+                     v-if="validCoupons.length">
+                    <span>Cupón</span>
+                    <span>
+                        <select class="border-1 border-gray-600 cursor-pointer"
+                                v-model="form.customer.coupon_code">
+                            <option value=""
+                                    selected>
+                                Elije un cupón
+                            </option>
+                            <option :key="coupon.code"
+                                    :value="coupon.code"
+                                    v-for="coupon in validCoupons">
+                                {{ coupon.description }}
+                            </option>
+                        </select>
+                    </span>
+                </div>
+
                 <div class="flex justify-between text-sm text-gray-600 dark:text-gray-300 mb-2">
                     <span>Subtotal</span>
                     <span>${{ subtotal }}</span>
@@ -141,7 +163,10 @@
                                type="text"
                                placeholder="Nombre(s) y Apellido(s)"
                                required
-                               v-model="customer.customer_name"/>
+                               v-model="form.customer.name"/>
+                        <div v-if="form.errors['customer.name']">
+                            {{ form.errors['customer.name'] }}
+                        </div>
                     </div>
 
                     <div>
@@ -151,7 +176,10 @@
                         <input class="mt-1 w-full border rounded-md px-3 py-2 text-sm
                                       dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
                                type="email"
-                               v-model="customer.email"/>
+                               v-model="form.customer.email"/>
+                        <div v-if="form.errors['customer.email']">
+                            {{ form.errors['customer.email'] }}
+                        </div>
                     </div>
 
                     <div>
@@ -162,8 +190,13 @@
                                       dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
                                type="text"
                                placeholder="Número a 10 dígitos"
+                               minlength="10"
+                               maxlength="10"
                                required
-                               v-model="customer.whatsapp"/>
+                               v-model="form.customer.whatsapp"/>
+                        <div v-if="form.errors['customer.whatsapp']">
+                            {{ form.errors['customer.whatsapp'] }}
+                        </div>
                     </div>
 
                     <div>
@@ -175,7 +208,29 @@
                                type="text"
                                placeholder="Calle y Número"
                                required
-                               v-model="customer.address"/>
+                               v-model="form.customer.address"/>
+                        <div v-if="form.errors['customer.address']">
+                            {{ form.errors['customer.address'] }}
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Municipio *
+                        </label>
+                        <select class="border-1 border-gray-600 cursor-pointer mt-1 w-full border rounded-md px-3 py-2 text-sm
+                                      dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
+                                v-model="form.customer.city">
+                            <option value="uriangato">
+                                Uriangato
+                            </option>
+                            <option value="moroleon">
+                                Moroleon
+                            </option>
+                        </select>
+                        <div v-if="form.errors['customer.city']">
+                            {{ form.errors['customer.city'] }}
+                        </div>
                     </div>
 
                     <div>
@@ -186,7 +241,10 @@
                                       dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
                                type="text"
                                required
-                               v-model="customer.neighborhood"/>
+                               v-model="form.customer.neighborhood"/>
+                        <div v-if="form.errors['customer.neighborhood']">
+                            {{ form.errors['customer.neighborhood'] }}
+                        </div>
                     </div>
 
                     <div>
@@ -197,10 +255,14 @@
                                       dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
                                type="text"
                                required
-                               v-model="customer.streets"/>
+                               v-model="form.customer.streets"/>
+                        <div v-if="form.errors['customer.streets']">
+                            {{ form.errors['customer.streets'] }}
+                        </div>
                     </div>
 
                     <button type="submit"
+                            :disabled="form.processing"
                             class="w-full bg-lime-600 text-white py-3 px-4 rounded-xl
                                 font-semibold hover:bg-lime-900 transition cursor-pointer">
                         Ordenar
@@ -214,9 +276,12 @@
 </template>
 
 <script setup>
-    import { reactive, computed } from 'vue';
+    import { computed } from 'vue';
     import { useCartStore } from '@/stores/cartStore.js';
     import Swal from 'sweetalert2';
+    import { v4 as uuidv4 } from 'uuid';
+    import { useForm, router } from '@inertiajs/vue3';
+    import axios from 'axios';
 
     const cartStore = useCartStore();
     const cart = computed(() => cartStore.cart)
@@ -224,6 +289,10 @@
     const props = defineProps({
         shipping: {
             type: Number,
+            required: true
+        },
+        coupons: {
+            type: Array,
             required: true
         }
     })
@@ -235,9 +304,24 @@
         )
     );
 
-    const total = computed(() => subtotal.value + parseFloat(props.shipping));
+    const total = computed(() => {
+        const subtotalShipping = subtotal.value + parseFloat(props.shipping);
+        let discount = 0;
+
+        if (form.customer.coupon_code) {
+            const coupon = props.coupons.find((coupon) => coupon.code == form.customer.coupon_code);
+            discount = (coupon ? coupon.discount_percentage / 100 : 0) * subtotal.value;
+        }
+
+        return subtotalShipping - discount;
+    });
+
+    const validCoupons = computed(() => 
+        props.coupons.filter((coupon) => coupon.min_total <= subtotal.value)
+    );
 
     const increase = (item) => {
+        form.customer.coupon_code = '';
         const newQuantity = item.quantity + 1;
         if (newQuantity <= item.product.stock ) {
             cartStore.updateQuantity(item.id, item.quantity + 1);
@@ -245,6 +329,7 @@
     };
 
     const decrease = (item) => {
+        form.customer.coupon_code = '';
         if (item.quantity > 1) {
             cartStore.updateQuantity(item.id, item.quantity - 1);
         }
@@ -256,41 +341,95 @@
 
     const productsInCart = computed(() => cartStore.totalCartItems);
 
-    const customer = reactive({
-        customer_name: '',
-        email: '',
-        whatsapp: '',
-        address: '',
-        neighborhood: '',
-        streets: ''
-    });
+    const orderUuid = uuidv4()
 
-    const submitOrder = () => {
+    const form = useForm({
+        //_method: 'PUT',
+        customer: {
+            name: '',
+            email: '',
+            whatsapp: '',
+            address: '',
+            neighborhood: '',
+            city: 'uriangato',
+            streets: '',
+            coupon_code: '',
+        },
+        items: [], // se llenará desde el carrito
+        subtotal: 0,
+        shipping: 0,
+        total: 0,
+    })
+
+    const submitOrder = async () => {
         if (!validForm()) {
             return;
         }
 
-        const order = {
-            customer: { ...customer },
-            items: cart,
-            subtotal: subtotal.value,
-            shipping: parseFloat(props.shipping),
-            total: total.value,
-        };
+        // mapear el carrito
+        form.items = cart.value.map(item => ({
+            id: item.id,
+            quantity: item.quantity,
+            shopping_cart: item.shopping_cart,
+            product: {
+                sku: item.product.sku,
+                name: item.product.name,
+                price: item.product.price,
+            }
+        }));
+        form.subtotal = subtotal.value;
+        form.shipping = parseFloat(props.shipping);
+        form.total = total.value;
 
-        console.log("Order submitted:", order);
-        // Aquí podrías hacer una petición a tu backend con Inertia.post() o Axios
+        try {
+            const response = await axios.put(`/orders/${orderUuid}`, form);
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Orden Creada',
+                text: 'Estás siendo redireccionado a la confirmación de tu pedido...',
+                timer: 3000,
+                showConfirmButton: false,
+                allowOutsideClick: false
+            });
+
+            await cartStore.clearCart();
+
+            // Redireccionar a la página de confirmación
+            // Redirigir con Inertia
+            router.visit(response.data.confirmation_url)
+        } catch (error) {
+            if (error.response?.status === 422) {
+                // Validación fallida
+                const html = Object.values(error.response.data.errors)
+                    .flat()
+                    .join('<br>');
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Ocurrió un error',
+                    html,
+                });
+            } else {
+                const msg = error.response?.data?.error || 'Ocurrió un error inesperado';
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops!',
+                    text: msg,
+                });
+            }
+        }
     }
 
     const validForm = () => {
         let valid = true;
 
         // Validación básica: todos excepto email son obligatorios
-        if (!customer.customer_name ||
-            !customer.whatsapp ||
-            !customer.address ||
-            !customer.neighborhood ||
-            !customer.streets) {
+        if (!form.customer.name ||
+            !form.customer.whatsapp ||
+            !form.customer.address ||
+            !form.customer.neighborhood ||
+            !form.customer.streets) {
 
             Swal.fire({
                 icon: 'warning',
@@ -304,7 +443,7 @@
         }
 
         // Validar email si no está vacío
-        if (customer.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customer.email)) {
+        if (form.customer.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.customer.email)) {
             Swal.fire({
                 icon: 'error',
                 title: 'Email inválido',
