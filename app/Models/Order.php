@@ -23,6 +23,7 @@ class Order extends Model
         'subtotal',
         'shipping_price',
         'total',
+        'source_shopping_cart',
         'coupon_id',
     ];
 
@@ -39,10 +40,6 @@ class Order extends Model
                 $order->update();
             }
         });
-
-        /*static::saved(function ($order) {
-            $order->updateTotalPrice();
-        });*/
     }
 
     public function coupon()
