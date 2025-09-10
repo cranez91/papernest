@@ -44,10 +44,12 @@ class ProductResource extends Resource
 
                 TextInput::make('slug')
                     ->required()
+                    ->readOnly()
                     ->unique(ignoreRecord: true),
 
                 TextInput::make('sku')
                     ->unique(ignoreRecord: true)
+                    ->readOnly()
                     ->nullable(),
 
                 TextInput::make('brand')
@@ -103,9 +105,8 @@ class ProductResource extends Resource
                     ->image()
                     //->imageEditor()
                     ->storeFileNamesIn('attachment_file_name')
-                    ->disk('public') // Usa el disco 'public', ya que la URL generada es "/storage/..."
-                    //->directory('ingredients') // Guarda en "storage/app/public/ingredients"
-                    //->visibility('public')
+                    ->disk('products') // Usa el disco 'products'
+                    ->visibility('public')
                     ->previewable(true)
                     ->required(),
 
@@ -122,6 +123,7 @@ class ProductResource extends Resource
             ->columns([
                 ImageColumn::make('photo')
                     ->label('Photo')
+                    ->disk('products')
                     ->toggleable()
                     ->circular(),
 

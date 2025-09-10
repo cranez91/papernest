@@ -52,6 +52,11 @@ class SettingResource extends Resource
                     ->length(10)
                     ->numeric()
                     ->required(),
+                
+                TextInput::make('shipping_price')
+                    ->numeric()
+                    ->inputMode('decimal')
+                    ->required(),
 
                 TextInput::make('latitude')
                     ->numeric()
@@ -115,6 +120,10 @@ class SettingResource extends Resource
                     ->searchable(),
 
                 TextColumn::make('whatsapp_contact')
+                    ->sortable()
+                    ->searchable(),
+
+                TextColumn::make('shipping_price')
                     ->sortable()
                     ->searchable(),
             ])

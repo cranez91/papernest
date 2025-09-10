@@ -3,9 +3,9 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <!-- Imagen producto -->
         <div class="flex items-center justify-center">
-            <img :src="`/products/${product.photo}`" 
-                 :alt="product.name" 
-                 class="rounded-xl max-h-[500px] object-cover">
+            <img class="rounded-xl max-h-[500px] object-cover"
+                 :src="`/products/${product.photo}`" 
+                 :alt="product.name">
         </div>
 
         <!-- Info producto -->
@@ -39,9 +39,12 @@
             </p>
 
             <!-- Botón Add to Cart -->
-            <button class="mt-4 bg-lime-600 hover:bg-lime-700 text-white font-semibold py-3 px-6 rounded-xl shadow-md transition duration-200">
+            <!--button class="mt-4 bg-lime-600 hover:bg-lime-700 text-white font-semibold py-3 px-6 rounded-xl shadow-md transition duration-200">
                 Agregar al carrito
-            </button>
+            </button-->
+            <add-to-cart :product="product"
+                         :icon-type="false">
+            </add-to-cart>
         </div>
     </div>
 </template>
