@@ -10,20 +10,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-Route::get('/contact', function () {
-    return view('contact');
-})
-->name('contact');
-
-Route::get('/about', function () {
-    return view('about');
-})
-->name('about');
-
-Route::get('/order', function () {
-    return view('order');
-});
-
+Route::get('/acerca',[HomeController::class, 'about'])->name('about');
 Route::get('/carrito', [HomeController::class, 'cart'])->name('cart');
 
 Route::get('/articulo/{sku?}', [ProductController::class, 'show'])->name('products.detail');
