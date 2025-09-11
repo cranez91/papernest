@@ -55,4 +55,12 @@ class HomeController extends Controller
             'settings' => $settings
         ]);
     }
+
+    public function termsOfService(Request $request) {
+        return Inertia::render('TermsOfService');
+    }
+
+    public function privacyPolicy(Request $request) {
+        return Inertia::render('PrivacyPolicy');
+    }
 }

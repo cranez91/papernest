@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/acerca',[HomeController::class, 'about'])->name('about');
+Route::get('/terminos',[HomeController::class, 'termsOfService'])->name('tos');
+Route::get('/privacidad',[HomeController::class, 'privacyPolicy'])->name('privacy');
 Route::get('/carrito', [HomeController::class, 'cart'])->name('cart');
 
 Route::get('/articulo/{sku?}', [ProductController::class, 'show'])->name('products.detail');

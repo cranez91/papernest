@@ -261,6 +261,30 @@
                         </div>
                     </div>
 
+                    <!-- Checkbox de aceptación -->
+                    <div class="flex items-start space-x-2">
+                        <input id="accept_terms"
+                               class="mt-1 h-4 w-4 text-lime-600 border-gray-300 rounded cursor-pointer"
+                               type="checkbox"
+                               required
+                               v-model="form.accepted"/>
+                        <label for="accept_terms"
+                               class="text-sm text-gray-700 dark:text-gray-300">
+                            Acepto los
+                            <a :href="route('tos')"
+                               class="text-lime-700 dark:text-lime-400 hover:underline"
+                               target="_blank">
+                                Términos y Condiciones
+                            </a>
+                            y la
+                            <a :href="route('privacy')"
+                               class="text-lime-700 dark:text-lime-400 hover:underline"
+                               target="_blank">
+                                Política de Privacidad
+                            </a>.
+                        </label>
+                    </div>
+
                     <button type="submit"
                             :disabled="form.processing"
                             class="w-full bg-lime-600 text-white py-3 px-4 rounded-xl
@@ -359,10 +383,23 @@
         subtotal: 0,
         shipping: 0,
         total: 0,
+        accepted: false,
+        processing: false,
     })
 
     const submitOrder = async () => {
-        if (!validForm()) {
+        if (!validForm() || !form.accepted) {
+            return;
+        }
+
+        if (!form.accepted) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Espera',
+                text: 'Debes aceptar nuestros términos y condiciones y el aviso de privacidad para poder continuar.',
+                showConfirmButton: false,
+                allowOutsideClick: false
+            });
             return;
         }
 
