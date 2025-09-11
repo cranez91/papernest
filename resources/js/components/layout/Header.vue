@@ -48,11 +48,6 @@
                     </Link>
 
                     <Link class="text-sm/6 font-semibold text-gray-900"
-                          :href="route('contact')">
-                        Contacto
-                    </Link>
-
-                    <Link class="text-sm/6 font-semibold text-gray-900"
                           :href="route('about')">
                         Acerca de
                     </Link>
@@ -106,10 +101,6 @@
                                     <Link :href="route('products.list')"
                                        class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">
                                         Articulos
-                                    </Link>
-                                    <Link :href="route('contact')"
-                                       class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">
-                                        Contacto
                                     </Link>
                                     <Link :href="route('about')"
                                        class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">

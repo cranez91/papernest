@@ -31,18 +31,18 @@ class SettingResource extends Resource
         return $form
             ->schema([
                 TextInput::make('business_name')
-                    ->label('Name')
+                    ->label('Nombre del Negocio')
                     ->required()
                     ->maxLength(80),
 
                 Textarea::make('description')
-                    ->label('Description')
+                    ->label('Descripción')
                     ->required()
                     ->rows(5)
                     ->maxLength(200),
 
                 TextInput::make('location')
-                    ->label('Location')
+                    ->label('Ubicación')
                     ->required()
                     ->maxLength(100),
 
@@ -53,57 +53,86 @@ class SettingResource extends Resource
                     ->numeric()
                     ->required(),
                 
+                TextInput::make('facebook_id')
+                    ->label('Facebook Page ID')
+                    ->maxLength(150)
+                    ->required(),
+                
+                TextInput::make('maps_link')
+                    ->label('Google Maps Link')
+                    ->maxLength(250)
+                    ->required(),
+                
                 TextInput::make('shipping_price')
-                    ->numeric()
-                    ->inputMode('decimal')
-                    ->required(),
-
-                TextInput::make('latitude')
-                    ->numeric()
-                    ->inputMode('decimal')
-                    ->required(),
-
-                TextInput::make('longitude')
+                    ->label('Costo de Envío')
                     ->numeric()
                     ->inputMode('decimal')
                     ->required(),
                 
                 Fieldset::make('Horarios de atención')->schema([
                     Grid::make(2)->schema([
-                        TimePicker::make('business_hours.monday.from')
-                            ->label('Lunes - Desde'),
-                        TimePicker::make('business_hours.monday.to')
-                            ->label('Lunes - Hasta'),
+                        TimePicker::make('business_hours.lunes.from')
+                            ->label('Lunes - Desde')
+                            ->seconds(false)
+                            ->format('h:i A'),
+                        TimePicker::make('business_hours.lunes.to')
+                            ->label('Lunes - Hasta')
+                            ->seconds(false)
+                            ->format('h:i A'),
 
-                        TimePicker::make('business_hours.tuesday.from')
-                            ->label('Martes - Desde'),
-                        TimePicker::make('business_hours.tuesday.to')
-                            ->label('Martes - Hasta'),
+                        TimePicker::make('business_hours.martes.from')
+                            ->label('Martes - Desde')
+                            ->seconds(false)
+                            ->format('h:i A'),
+                        TimePicker::make('business_hours.martes.to')
+                            ->label('Martes - Hasta')
+                            ->seconds(false)
+                            ->format('h:i A'),
 
-                        TimePicker::make('business_hours.wednesday.from')
-                            ->label('Miércoles - Desde'),
-                        TimePicker::make('business_hours.wednesday.to')
-                            ->label('Miércoles - Hasta'),
+                        TimePicker::make('business_hours.miercoles.from')
+                            ->label('Miércoles - Desde')
+                            ->seconds(false)
+                            ->format('h:i A'),
+                        TimePicker::make('business_hours.miercoles.to')
+                            ->label('Miércoles - Hasta')
+                            ->seconds(false)
+                            ->format('h:i A'),
 
-                        TimePicker::make('business_hours.thursday.from')
-                            ->label('Jueves - Desde'),
-                        TimePicker::make('business_hours.thursday.to')
-                            ->label('Jueves - Hasta'),
+                        TimePicker::make('business_hours.jueves.from')
+                            ->label('Jueves - Desde')
+                            ->seconds(false)
+                            ->format('h:i A'),
+                        TimePicker::make('business_hours.jueves.to')
+                            ->label('Jueves - Hasta')
+                            ->seconds(false)
+                            ->format('h:i A'),
 
-                        TimePicker::make('business_hours.friday.from')
-                            ->label('Viernes - Desde'),
-                        TimePicker::make('business_hours.friday.to')
-                            ->label('Viernes - Hasta'),
+                        TimePicker::make('business_hours.viernes.from')
+                            ->label('Viernes - Desde')
+                            ->seconds(false)
+                            ->format('h:i A'),
+                        TimePicker::make('business_hours.viernes.to')
+                            ->label('Viernes - Hasta')
+                            ->seconds(false)
+                            ->format('h:i A'),
 
-                        TimePicker::make('business_hours.saturday.from')
-                            ->label('Sábado - Desde'),
-                        TimePicker::make('business_hours.saturday.to')
-                            ->label('Sábado - Hasta'),
+                        TimePicker::make('business_hours.sabado.from')
+                            ->label('Sábado - Desde')
+                            ->seconds(false)
+                            ->format('h:i A'),
+                        TimePicker::make('business_hours.sabado.to')
+                            ->label('Sábado - Hasta')
+                            ->seconds(false)
+                            ->format('h:i A'),
 
-                        TimePicker::make('business_hours.sunday.from')
-                            ->label('Domingo - Desde'),
-                        TimePicker::make('business_hours.sunday.to')
-                            ->label('Domingo - Hasta'),
+                        TimePicker::make('business_hours.domingo.from')
+                            ->label('Domingo - Desde')
+                            ->seconds(false)
+                            ->format('h:i A'),
+                        TimePicker::make('business_hours.domingo.to')
+                            ->label('Domingo - Hasta')
+                            ->seconds(false)
+                            ->format('h:i A'),
                     ]),
                 ])
                 ->columns(1)

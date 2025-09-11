@@ -1,7 +1,7 @@
 <template>
     <Header/>
 
-    <div class="relative isolate px-6 pt-8 lg:px-8 bg-white">
+    <div class="relative isolate px-6 pt-8 lg:px-8 bg-gray-200">
         <div class="mx-auto max-w-2xl py-30 sm:py-30 lg:py-30">
             <div class="text-center">
                 <h1 class="text-5xl font-semibold tracking-tight text-balance text-gray-900 sm:text-7xl">
@@ -15,7 +15,7 @@
         </div>
     </div>
 
-    <div class="bg-gray-200">
+    <div class="bg-white">
         <div class="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
             <h2 class="text-2xl font-bold tracking-tight text-gray-900">
                 Los más populares
