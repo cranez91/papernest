@@ -21,7 +21,7 @@
                         <ul role="list"
                             class="mt-4 space-y-2 text-sm text-gray-400">
                             <li>
-                                <a href="#"
+                                <a :href="route('about')"
                                    class="hover:text-white">
                                     Acerca de
                                 </a>
