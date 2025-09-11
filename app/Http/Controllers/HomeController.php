@@ -40,4 +40,19 @@ class HomeController extends Controller
             'coupons' => $coupons
         ]);
     }
+
+    public function about(Request $request) {
+        $settings = Setting::first();
+        
+        if (!is_null($settings)) {
+            $settings->whatsapp_web = "https://web.whatsapp.com/send?phone=+52{$settings->whatsapp_contact}";
+            $settings->whatsapp_mobile = "https://api.whatsapp.com/send?phone=+52{$settings->whatsapp_contact}";
+            $settings->messenger = "https://m.me/{$settings->facebook_id}";
+            $settings->schedule = $settings->business_hours;
+        }
+
+        return Inertia::render('About', [
+            'settings' => $settings
+        ]);
+    }
 }
