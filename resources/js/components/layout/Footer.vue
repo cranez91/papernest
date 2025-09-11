@@ -8,7 +8,7 @@
                         Papelería Andy
                     </h2>
                     <p class="mt-4 text-sm text-gray-400">
-                        Atención cercana, precios accesibles y productos de calidad, ¡todo en un solo lugar!
+                        Con nosotros encontrarás atención cercana, precios accesibles y productos de calidad.
                     </p>
                 </div>
 
@@ -21,10 +21,10 @@
                         <ul role="list"
                             class="mt-4 space-y-2 text-sm text-gray-400">
                             <li>
-                                <a :href="route('about')"
-                                   class="hover:text-white">
+                                <Link :href="route('about')"
+                                      class="hover:text-white">
                                     Acerca de
-                                </a>
+                                </Link>
                             </li>
                         </ul>
                     </div>
@@ -35,16 +35,16 @@
                         <ul role="list"
                             class="mt-4 space-y-2 text-sm text-gray-400">
                             <li>
-                                <a :href="route('tos')"
-                                   class="hover:text-white">
+                                <Link :href="route('tos')"
+                                      class="hover:text-white">
                                     Términos
-                                </a>
+                                </Link>
                             </li>
                             <li>
-                                <a :href="route('privacy')"
-                                   class="hover:text-white">
+                                <Link :href="route('privacy')"
+                                      class="hover:text-white">
                                     Privacidad
-                                </a>
+                                </Link>
                             </li>
                         </ul>
                     </div>

@@ -7,6 +7,8 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use Filament\Http\Middleware\Authenticate;
 use Illuminate\Support\Facades\Route;
+use Spatie\Sitemap\Sitemap;
+use Spatie\Sitemap\Tags\Url;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -34,4 +36,19 @@ Route::middleware('web')->group(function () {
 
     Route::put('/orders/{order}', [OrderController::class, 'store'])->name('orders.store'); // idempotente
     Route::get('/orders/confirmation/{order}', [OrderController::class, 'confirmation'])->name('orders.confirmation');
+});
+
+Route::get('/sitemap.xml', function () {
+    $sitemap = Sitemap::create()
+        ->add(Url::create('/')
+            ->setLastModificationDate(now())
+            ->setChangeFrequency(Url::CHANGE_FREQUENCY_DAILY)
+            ->setPriority(1.0))
+        ->add(Url::create(config('app.url') . '/acerca'))
+        ->add(Url::create(config('app.url') . '/privacidad'))
+        ->add(Url::create(config('app.url') . '/terminos'))
+        ->add(Url::create(config('app.url') . '/articulos'))
+        ->add(Url::create(config('app.url') . '/carrito'));
+
+    return $sitemap->toResponse(request());
 });
