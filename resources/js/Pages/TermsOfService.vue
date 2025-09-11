@@ -1,4 +1,8 @@
 <template>
+    <SeoHead title="Términos y Condiciones"
+             description="En Papelería Andy, al realizar un pedido en nuestro sitio web, aceptas los siguientes términos y condiciones."
+             image="/images/preview-cart.jpg"/>
+
     <Header/>
 
     <div class="max-w-3xl mx-auto py-10 px-6 prose prose-slate pt-26">
@@ -77,4 +81,5 @@
 </template>
 
 <script setup>
+    import SeoHead from '@/components/layout/SeoHead.vue';
 </script>

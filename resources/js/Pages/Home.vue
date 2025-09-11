@@ -1,4 +1,8 @@
 <template>
+    <SeoHead title="Inicio"
+             description="En Papelería Andy encontrarás todo lo que necesitas para estudiar, trabajar y crear. Atención cercana, precios accesibles y productos de calidad, ¡todo en un solo lugar!"
+             image="/images/preview-cart.jpg"/>
+
     <Header/>
 
     <div class="relative isolate px-6 pt-8 lg:px-8 bg-gray-200">
@@ -64,6 +68,7 @@
 <script setup>
     import { Link } from '@inertiajs/vue3';
     import HomeChatBot from '@/components/HomeChatBot.vue';
+    import SeoHead from '@/components/layout/SeoHead.vue';
 
     const props = defineProps({
         products: Array

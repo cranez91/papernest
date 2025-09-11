@@ -1,5 +1,9 @@
 
 <template>
+    <SeoHead title="Acerca de Nosotros"
+             description="En Papelería Andy encontrarás atención cercana, precios accesibles y productos de calidad, ¡todo en un solo lugar!. Envíos disponibles en Uriangato y Moroleón"
+             image="/images/preview-cart.jpg"/>
+
     <Header/>
 
     <div class="max-w-4xl mx-auto py-12 px-6 space-y-10 mt-14">
@@ -109,7 +113,8 @@
 
 <script setup>
     import { MessageCircle, Facebook } from "lucide-vue-next";
-    import { isMobile } from 'mobile-device-detect'
+    import { isMobile } from 'mobile-device-detect';
+    import SeoHead from '@/components/layout/SeoHead.vue';
 
     const props = defineProps({
         settings: {

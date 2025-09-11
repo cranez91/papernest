@@ -1,4 +1,8 @@
 <template>
+    <SeoHead title="Carrito de Compras"
+             description="Agrega productos de papelería a tu carrito y recíbelos en domicilio en Uriangato y Moroleón. Pago en efectivo contra entrega disponible."
+             image="/images/preview-cart.jpg"/>
+
     <Header/>
 
     <!-- Banner -->
@@ -306,6 +310,7 @@
     import { v4 as uuidv4 } from 'uuid';
     import { useForm, router } from '@inertiajs/vue3';
     import axios from 'axios';
+    import SeoHead from '@/components/layout/SeoHead.vue';
 
     const cartStore = useCartStore();
     const cart = computed(() => cartStore.cart)
