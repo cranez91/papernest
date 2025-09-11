@@ -1,5 +1,9 @@
 
 <template>
+    <SeoHead title="Política de Privacidad"
+             description="En Papelería Andy, valoramos tu confianza y nos comprometemos a proteger la información personal que compartes con nosotros."
+             image="/images/preview-cart.jpg"/>
+
     <Header/>
 
     <div class="max-w-3xl mx-auto py-10 px-6 prose prose-slate pt-26">
@@ -85,4 +89,5 @@
 </template>
 
 <script setup>
+    import SeoHead from '@/components/layout/SeoHead.vue';
 </script>

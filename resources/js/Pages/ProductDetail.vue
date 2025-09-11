@@ -1,4 +1,8 @@
 <template>
+    <SeoHead title="Detalle del Producto"
+             :description="'Visualización a detalle del producto: ' + product.name"
+             image="/images/preview-cart.jpg"/>
+
     <Header/>
 
     <div class="container-fluid mx-auto p-6">
@@ -17,6 +21,7 @@
 
 <script setup>
     import Detail from '@/components/products/Detail.vue';
+    import SeoHead from '@/components/layout/SeoHead.vue';
 
     const props = defineProps({
         product: Object

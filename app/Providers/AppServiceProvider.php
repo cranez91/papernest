@@ -7,6 +7,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\File;
+use Inertia\Inertia;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -27,5 +28,9 @@ class AppServiceProvider extends ServiceProvider
         if (File::exists(storage_path('app/public'))) {
             URL::forceScheme('http'); // o 'https' si usas HTTPS
         }
+
+        Inertia::share([
+            'appUrl' => config('app.url'),
+        ]);
     }
 }

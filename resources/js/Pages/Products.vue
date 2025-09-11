@@ -1,4 +1,8 @@
 <template>
+    <SeoHead title="Artículos"
+             description="En Papelería Andy encontrarás útiles escolares, materiales de oficina, regalos y más sorpresas."
+             image="/images/preview-cart.jpg"/>
+
     <Header/>
 
     <div class="bg-white">
@@ -189,6 +193,7 @@
 
 <script setup>
     import { Link, router } from '@inertiajs/vue3';
+    import SeoHead from '@/components/layout/SeoHead.vue';
 
     const props = defineProps({
         products: Object,

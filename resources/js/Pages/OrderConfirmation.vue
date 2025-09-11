@@ -1,4 +1,8 @@
 <template>
+    <SeoHead title="Confirmación de Orden"
+             description="Orden creada satisfactoriamente, estará llegando muy pronto a tu domicilio."
+             image="/images/preview-cart.jpg"/>
+
     <Header/>
 
     <!-- Banner -->
@@ -119,6 +123,8 @@
 
 
 <script setup>
+    import SeoHead from '@/components/layout/SeoHead.vue';
+
     const props = defineProps({
         order: Object
     });
