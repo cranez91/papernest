@@ -27,6 +27,8 @@
         "@tailwindplus/elements": "^1.0.12",
         "@vitejs/plugin-vue": "^5.2.1",
         "jquery": "^3.7.1",
+        "lucide-vue-next": "^0.543.0",
+        "mobile-device-detect": "^0.4.3",
         "pinia": "^3.0.3",
         "sweetalert2": "^11.22.5",
         "uuid": "^11.1.0",
