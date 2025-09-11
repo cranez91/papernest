@@ -35,21 +35,15 @@
                         <ul role="list"
                             class="mt-4 space-y-2 text-sm text-gray-400">
                             <li>
-                                <a href="#"
+                                <a :href="route('tos')"
                                    class="hover:text-white">
                                     Términos
                                 </a>
                             </li>
                             <li>
-                                <a href="#"
+                                <a :href="route('privacy')"
                                    class="hover:text-white">
                                     Privacidad
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#"
-                                   class="hover:text-white">
-                                    Cookies
                                 </a>
                             </li>
                         </ul>
@@ -60,7 +54,7 @@
             <!-- Bottom -->
             <div class="mt-12 border-t border-gray-700 pt-8 md:flex md:items-center md:justify-between">
                 <p class="text-sm text-gray-400">
-                    &copy; 2025 Papelería Andy. Todos los derechos reservados.
+                    &copy; {{ new Date().getFullYear() }} Papelería Andy. Todos los derechos reservados.
                 </p>
                 <div class="mt-4 flex space-x-6 md:mt-0">
                     <a href="https://www.facebook.com/profile.php?id=100063889492107"
