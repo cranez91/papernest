@@ -30,6 +30,7 @@
                     <Link :href="`/articulo/${ product.sku }`">
                         <img :src="`/products/${product.photo}`"
                              :alt="`${product.name}`"
+                             loading="lazy"
                              class="aspect-square w-full rounded-md bg-gray-200 object-cover group-hover:opacity-75 lg:aspect-auto lg:h-80" />
                     </Link>
                     <div class="mt-4 flex justify-between">
