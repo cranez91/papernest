@@ -37,9 +37,10 @@ jobs:
           exclude: |
             **/public/**
             **/node_modules/**
+            **/vendor/**
             **/tests/**
-            **/.git**
-            **/.github**
+            **/.git/**
+            **/.github/**
       
       - name: Upload public to server
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
@@ -49,3 +50,5 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./public
           server-dir: /papeleria-andy.com.mx/
+          exclude: |
+            index.php
