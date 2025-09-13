@@ -7,6 +7,8 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Vite;
 use Inertia\Inertia;
 
 class AppServiceProvider extends ServiceProvider
@@ -25,12 +27,20 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Model::unguard();
-        if (File::exists(storage_path('app/public'))) {
-            URL::forceScheme('http'); // o 'https' si usas HTTPS
-        }
 
         Inertia::share([
             'appUrl' => config('app.url'),
         ]);
+
+        if (App::environment('production')) {
+            // En producción, especificar que el build está en el public real
+            $buildPath = env('VITE_BUILD_PATH');
+
+            if ($buildPath) {
+                Vite::useBuildDirectory($buildPath);
+            }
+
+            URL::forceScheme('https');
+        }
     }
 }
