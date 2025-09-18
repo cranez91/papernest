@@ -15,12 +15,39 @@
 
         <div class="bg-white">
             <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <div class="flex items-baseline justify-between border-b border-gray-200 pt-6 pb-6">
-                    <h1 class="text-2xl font-bold tracking-tight text-gray-900">
+                <div class="flex flex-col lg:flex-row items-baseline
+                            border-b border-gray-200 pt-6 pb-6 justify-between">
+                    <h1 class="text-2xl font-bold tracking-tight text-gray-900 mb-3">
                         Te ofrecemos
                     </h1>
 
-                    <div class="flex items-center">
+                    <div class="flex w-sm mb-3">
+                            <input class="flex-1 rounded-l-md border border-gray-300 px-3 py-2
+                                        text-sm focus:outline-none focus:ring-2 focus:ring-lime-600"
+                                   type="text"
+                                   placeholder="Buscar..."
+                                   v-model="search"/>
+
+                            <button class="rounded-r-md bg-lime-600 px-3 text-white hover:bg-lime-700
+                                        flex items-center justify-center cursor-pointer"
+                                    type="button"
+                                    @click="searchProducts">
+                                <!-- Icono de búsqueda -->
+                                <svg xmlns="http://www.w3.org/2000/svg" 
+                                     class="h-5 w-5" 
+                                     fill="none" 
+                                     viewBox="0 0 24 24" 
+                                     stroke="currentColor">
+                                    <path stroke-linecap="round" 
+                                          stroke-linejoin="round" 
+                                          stroke-width="2" 
+                                          d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1010.5
+                                             18a7.5 7.5 0 006.15-3.35z" />
+                                </svg>
+                            </button>
+                    </div>
+
+                    <div class="flex items-center mb-3">
                         <el-dropdown class="block lg:hidden relative inline-block text-left mr-6">
                             <button class="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900">
                                 Categorias
@@ -118,8 +145,13 @@
                                         Ver Todos
                                     </Link>
                                 </li>
-                                <li v-for="category in categories">
+                                <li :key="category.sku"
+                                    v-for="category in categories">
                                     <Link class="text-sm/6 font-semibold text-gray-900"
+                                          :class="{
+                                            'bg-amber-200 p-3 text-black': page.url.includes(category.sku), 
+                                            'text-gray-500 hover:bg-gray-100': !page.url.includes(category.sku)
+                                          }"
                                           :href="`/articulos/${category.sku}`">
                                         {{ category.name }}
                                     </Link>
@@ -130,7 +162,8 @@
 
                         <!-- Product grid -->
                         <div class="lg:col-span-3">
-                            <div class="mx-auto max-w-2xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
+                            <div class="mx-auto max-w-2xl px-4 sm:px-6 lg:max-w-7xl lg:px-8"
+                                 v-if="products.data.length">
                                 <div class="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-3 xl:gap-x-8">
                                     <div class="group relative"
                                          v-for="product in products.data">
@@ -181,6 +214,10 @@
                                     />
                                 </div>
                             </div>
+                            <div class="mx-auto max-w-2xl px-4 sm:px-6 lg:max-w-7xl lg:px-8"
+                                 v-else>
+                                <h1 class="font-bold">No se encontraron productos</h1>
+                            </div>
                         </div>
                     </div>
                 </section>
@@ -192,8 +229,13 @@
 </template>
 
 <script setup>
-    import { Link, router } from '@inertiajs/vue3';
+    import { ref } from 'vue';
+    import { Link, router, usePage } from '@inertiajs/vue3';
     import SeoHead from '@/components/layout/SeoHead.vue';
+    import Swal from 'sweetalert2';
+
+    const page = usePage()
+    const search = ref('')
 
     const props = defineProps({
         products: Object,
@@ -207,4 +249,36 @@
         const relativeUrl = url.replace(window.location.origin, '')
         router.get(relativeUrl, {}, { preserveState: true, replace: true });
     };
+
+    const searchProducts = async () => {
+        if (!search.value) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Espera un momento',
+                text: 'Debes ingresar el producto que deseas buscar',
+                showConfirmButton: true,
+                allowOutsideClick: false
+            });
+            return;
+        }
+        Swal.fire({
+            icon: 'info',
+            title: 'Espera un momento',
+            text: 'Estamos obteniendo los resultados para tu búsqueda...',
+            timer: 2000,
+            timerProgressBar: true,
+            showConfirmButton: false,
+            allowOutsideClick: false
+        }).then((result) => {
+            redirectWithSearch(search.value);
+        });
+    }
+
+    const redirectWithSearch = (value) => {
+        const params = new URLSearchParams(window.location.search);
+        params.set('search', value);
+
+        const newUrl = `${window.location.pathname}?${params.toString()}`;
+        router.visit(newUrl);
+    }
 </script>

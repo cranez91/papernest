@@ -38,10 +38,10 @@
                 En existencia: <span class="font-medium"> {{ product.stock }} </span>
             </p>
 
-            <!-- Botón Add to Cart -->
-            <!--button class="mt-4 bg-lime-600 hover:bg-lime-700 text-white font-semibold py-3 px-6 rounded-xl shadow-md transition duration-200">
-                Agregar al carrito
-            </button-->
+            <p class="text-sm text-gray-500">
+                Etiquetas: <span v-html="tagsList"></span>
+            </p>
+
             <add-to-cart :product="product"
                          :icon-type="false">
             </add-to-cart>
@@ -50,7 +50,26 @@
 </template>
 
 <script setup>
+    import { computed } from 'vue';
+
     const props = defineProps({
         product: Object
     })
+
+    const tagsList = computed(function() {
+        let list = '';
+
+        for (let index = 0; index < props.product.tags.length; index++) {
+            const tag = props.product.tags[index];
+            list += `<a href='/articulos?search=${tag.name}'
+                        class="font-medium underline underline-offset-6">
+                        ${tag.name}
+                     </a>`;
+            if (index < (props.product.tags.length - 1)) {
+                list += ' | ';
+            }
+        }
+
+        return list;
+    });
 </script>
