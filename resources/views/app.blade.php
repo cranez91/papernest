@@ -4,6 +4,8 @@
             <meta charset="utf-8">
             <meta name="viewport"
                   content="width=device-width, initial-scale=1, shrink-to-fit=no">
+            <link rel="icon"
+                  href="/images/papeleria-andy-logo-dino.png">
             <!-- Fetch project name dynamically -->
             <title inertia>{{ config('app.name', 'Laravel') }}</title>
             @vite(['resources/css/app.css', 'resources/js/app.js'])

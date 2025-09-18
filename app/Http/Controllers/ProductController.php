@@ -18,7 +18,7 @@ class ProductController extends Controller
             ->basicInfo()
             ->with(['category:id,name'])
             ->orderBy($sortByColumn, $sortByOrder)
-            ->when($request->filled('search'), fn($q) => $q->filterByName($request->search))
+            ->when($request->filled('search'), fn($q) => $q->filterByNameOrTags($request->search))
             ->when($category, function($query) use ($category) {
                 $query->whereHas('category', function($query) use ($category) {
                     $query->where('sku', $category);
@@ -45,7 +45,10 @@ class ProductController extends Controller
             return redirect()->route('home');
         }
 
-        $product = Product::where('sku', $sku)->first();
+        $product = Product::where('sku', $sku)
+            ->with('tags:name')
+            ->first();
+
         if (is_null($product)) {
             return redirect()->route('home');
         }

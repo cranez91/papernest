@@ -19,7 +19,7 @@ class ProductController extends Controller
             );
         }
 
-        $products = Product::filterByName($search)
+        $products = Product::filterByNameOrTags($search)
             ->activeItems()
             ->basicInfo()
             ->with(['category:id,name'])
