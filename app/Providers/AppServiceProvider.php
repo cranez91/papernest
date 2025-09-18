@@ -33,13 +33,6 @@ class AppServiceProvider extends ServiceProvider
         ]);
 
         if (App::environment('production')) {
-            // En producción, especificar que el build está en el public real
-            $buildPath = env('VITE_BUILD_PATH');
-
-            if ($buildPath) {
-                Vite::useBuildDirectory($buildPath);
-            }
-
             URL::forceScheme('https');
         }
     }

@@ -103,6 +103,33 @@ class Product extends Model
         });
     }
 
+    public function scopeFilterByTags($query, $filter)
+    {
+        $keywords = explode(' ', $filter);
+
+        return $query->where(function ($query) use ($keywords) {
+            foreach ($keywords as $keyword) {
+                $query->orWhereHas('tags', function ($q) use ($keyword) {
+                    $q->where('name', 'like', '%' . $keyword . '%');
+                });
+            }
+        });
+    }
+
+    public function scopeFilterByNameOrTags($query, $filter)
+    {
+        $keywords = explode(' ', $filter);
+
+        return $query->where(function ($q) use ($keywords) {
+            foreach ($keywords as $keyword) {
+                $q->where('products.name', 'like', '%' . $keyword . '%')
+                    ->orWhereHas('tags', function ($q2) use ($keyword) {
+                        $q2->where('name', 'like', '%' . $keyword . '%');
+                    });
+            }
+        });
+    }
+
     public function getCategoryNameAttribute()
     {
         return $this->category?->name;
