@@ -15,6 +15,9 @@ jobs:
 
       - name: Install PHP dependencies
         run: composer install --no-dev --optimize-autoloader
+      
+      - name: Publish Livewire assets
+        run: php artisan vendor:publish --force --tag=livewire:assets
 
       - name: Install Node.js
         uses: actions/setup-node@v3
