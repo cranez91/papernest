@@ -39,6 +39,7 @@ jobs:
           server-dir: /papeleria-andy/
           exclude: |
             **/public/**
+            !public/build/**
             **/node_modules/**
             **/vendor/**
             **/tests/**
