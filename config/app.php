@@ -123,4 +123,8 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'filament' => [
+        'admins' => env('FILAMENT_ADMIN_USERS', []),
+    ],
+
 ];
