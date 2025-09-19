@@ -9,7 +9,9 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Vite;
+use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Livewire\Livewire;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -34,6 +36,14 @@ class AppServiceProvider extends ServiceProvider
 
         if (App::environment('production')) {
             URL::forceScheme('https');
+
+            Livewire::setScriptRoute(function ( $handle ) {
+                return Route::get('/livewire/live-wire-js', $handle);
+            });
+
+            Livewire::setUpdateRoute(function ($handle) {
+                return Route::post('/livewire/update', $handle);
+            });
         }
     }
 }
