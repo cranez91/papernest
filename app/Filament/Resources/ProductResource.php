@@ -20,8 +20,8 @@ use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\SelectColumn;
 use Filament\Forms\Components\TagsInput;
+use Filament\Tables\Filters\SelectFilter;
 use App\Models\Tag;
-use Illuminate\Support\Str;
 
 class ProductResource extends Resource
 {
@@ -37,15 +37,15 @@ class ProductResource extends Resource
             Grid::make(2)->schema([
 
                 TextInput::make('name')
+                    ->label('Nombre')
                     ->required()
                     ->maxLength(255)
-                    ->reactive()
-                    ->afterStateUpdated(fn ($state, callable $set) => $set('slug', Str::slug($state))),
+                    ->reactive(),
 
                 TextInput::make('slug')
-                    ->required()
+                    ->unique(ignoreRecord: true)
                     ->readOnly()
-                    ->unique(ignoreRecord: true),
+                    ->nullable(),
 
                 TextInput::make('sku')
                     ->unique(ignoreRecord: true)
@@ -53,34 +53,39 @@ class ProductResource extends Resource
                     ->nullable(),
 
                 TextInput::make('brand')
+                    ->label('Marca')
                     ->maxLength(255)
                     ->nullable(),
 
                 Select::make('category_id')
-                    ->label('Category')
+                    ->label('Categoría')
                     ->relationship('category', 'name')
                     ->required(),
 
                 TextInput::make('cost')
+                    ->label('¿Cuánto costó?')
                     ->numeric()
                     ->step(0.01)
                     ->required(),
 
                 TextInput::make('price')
+                    ->label('Precio')
                     ->numeric()
                     ->step(0.01)
                     ->required(),
 
                 TextInput::make('stock')
+                    ->label('En existencia')
                     ->numeric()
                     ->minValue(0)
                     ->default(0),
 
                 Select::make('status')
+                    ->label('Disponibilidad')
                     ->options([
-                        'paused' => 'Paused',
-                        'active' => 'Active',
-                        'inactive' => 'Inactive',
+                        'paused' => 'Pausado',
+                        'active' => 'Activo',
+                        'inactive' => 'Inactivo',
                     ])
                     ->required(),
                 
@@ -102,6 +107,7 @@ class ProductResource extends Resource
                     }),
 
                 FileUpload::make('photo')
+                    ->label('Foto')
                     ->image()
                     //->imageEditor()
                     ->storeFileNamesIn('attachment_file_name')
@@ -111,6 +117,7 @@ class ProductResource extends Resource
                     ->required(),
 
                 Textarea::make('description')
+                    ->label('Descripción')
                     ->maxLength(1000)
                     ->nullable(),
             ])
@@ -122,43 +129,53 @@ class ProductResource extends Resource
         return $table
             ->columns([
                 ImageColumn::make('photo')
-                    ->label('Photo')
+                    ->label('Foto')
                     ->disk('products')
                     ->toggleable()
                     ->circular(),
 
                 TextColumn::make('name')
+                    ->label('Nombre')
                     ->searchable()
+                    ->words(5)
                     ->sortable(),
 
                 TextColumn::make('price')
-                    ->money('USD', true)
+                    ->prefix('$')
+                    ->label('Precio')
+                    ->money('MXN', true)
                     ->sortable(),
 
                 SelectColumn::make('status')
+                    ->label('Status')
                     ->searchable()
                     ->options([
-                        'paused' => 'Paused',
-                        'active' => 'Active',
-                        'inactive' => 'Inactive',
+                        'paused' => 'Pausado',
+                        'active' => 'Activo',
+                        'inactive' => 'Inactivo',
                 ]),
 
                 TextColumn::make('stock')
+                    ->label('En existencia')
                     ->sortable(),
 
                 TextColumn::make('brand')
+                    ->label('Marca')
                     ->sortable()
                     ->searchable()
                     ->toggleable(),
                 
                 TextColumn::make('category.name')
-                    ->label('Category')
+                    ->label('Categoría')
                     ->sortable()
                     ->toggleable()
                     ->searchable(),
             ])
             ->filters([
-                // Puedes agregar filtros aquí si lo deseas
+                SelectFilter::make('category')
+                    ->relationship('category', 'name')
+                    ->searchable()
+                    ->preload()
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),

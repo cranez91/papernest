@@ -5,13 +5,13 @@
 
     <Header/>
 
-    <div class="relative isolate px-6 pt-8 lg:px-8 bg-gray-200">
+    <div class="relative isolate px-6 pt-8 lg:px-8 bg-gray-200 bg-[url('/images/fondo_papeleria.png')] bg-cover bg-center bg-no-repeat">
         <div class="mx-auto max-w-2xl py-30 sm:py-30 lg:py-30">
-            <div class="text-center">
-                <h1 class="text-5xl font-semibold tracking-tight text-balance text-gray-900 sm:text-7xl">
+            <div class="text-center backdrop-blur-sm rounded-2xl p-6">
+                <h1 class="text-4xl font-semibold tracking-tight text-balance text-gray-900 sm:text-6xl">
                     Todo lo que necesitas para estudiar, trabajar y crear
                 </h1>
-                <p class="mt-8 text-lg font-medium text-pretty text-gray-500 sm:text-xl/8">
+                <p class="mt-8 text-lg font-medium text-pretty text-gray-700 sm:text-xl/8">
                     En Papelería Andy encontrarás útiles escolares, materiales de oficina, regalos y más sorpresas.
                     Atención cercana, precios accesibles y productos de calidad, ¡todo en un solo lugar!
                 </p>
@@ -55,7 +55,7 @@
                             ${{ product.price }}
                         </p>
                     </div>
-                    <div class="mt-2 flex justify-between">
+                    <div class="mt-2 flex justify-center">
                         <add-to-cart :product="product"></add-to-cart>
                     </div>
                 </div>
@@ -64,6 +64,13 @@
                         sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8"
                  v-else>
                 <h1>No se encontraron productos</h1>
+            </div>
+            <div class="flex w-full justify-center mt-12">
+                <Link :href="`/articulos`">
+                    <span class="font-semibold">
+                        > Ver más artículos <
+                    </span>
+                </Link>
             </div>
         </div>
     </div>

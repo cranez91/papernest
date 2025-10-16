@@ -4,14 +4,14 @@
 			<div class="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-4 lg:max-w-none ">
 				<div>
 					<h2 class="text-4xl font-semibold tracking-tight text-white">
-						Preguntale a nuestro chatbot 🤖
+						Preguntale a nuestro Asistente Virtual 🤖
 					</h2>
 					<p class="mt-4 text-lg text-gray-300">
-						Nos ponemos a la moda con la IA y te ofrecemos la posibilidad de preguntar a nuestro amigable chatbot sobre la existencia de los artículos que buscas.
+						Te ofrecemos la posibilidad de preguntar a nuestro asistente sobre la existencia de los artículos que buscas.
 						¡Pregunta!
 					</p>
 				</div>
-				<dl class="grid grid-cols-1 text-white">
+				<div class="grid grid-cols-1 text-white">
 					<div class="container mx-auto p-2 text-gray-100">
 						<div class="max-w-xl mx-auto mt-10">
 							<h2 class="text-2xl font-bold mb-4 text-center">
@@ -23,22 +23,23 @@
 								 style="color: #000000; font-size: 12px;"
 								 v-html="chatbox">
 							</div>
+
 							<form id="main-chat-form"
 								  class="mt-4"
 								  @submit.prevent="onSubmit">
 								<input type="text"
-									   id="main-chat-input"
-									   class="w-full border p-2"
-									   placeholder="Nombre del producto"
-									   v-model="form.product"/>
+										id="main-chat-input"
+										class="w-full border p-2"
+										placeholder="Nombre del producto"
+										v-model="form.product"/>
 								<button type="submit"
-										class="mt-2 px-4 py-2 bg-lime-600 text-white">
-									Enviar
+										class="mt-6 px-4 py-2 w-full bg-lime-600 text-white">
+									Buscar
 								</button>
 							</form>
 						</div>
 					</div>
-				</dl>
+				</div>
 			</div>
 		</div>
 		<div aria-hidden="true"

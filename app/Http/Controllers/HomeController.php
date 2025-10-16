@@ -16,8 +16,8 @@ class HomeController extends Controller
         $products = Product::activeItems()
             ->basicInfo()
             ->with(['category:id,name'])
-            ->latest()
-            ->take(4)
+            ->inRandomOrder()
+            ->take(8)
             ->get();
 
         return Inertia::render('Home', [
