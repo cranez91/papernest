@@ -27,9 +27,10 @@ class ProductController extends Controller
             ->paginate(20)
             ->withQueryString();
         
-        $categories = Category::orderBy('name', 'asc')
+        $categories = Category::withCount('products')
+            ->orderBy('name', 'asc')
             ->get(['id', 'sku', 'name']);
-        
+
         $selected_category = $category ? $category : '';
 
         return Inertia::render('Products', [
