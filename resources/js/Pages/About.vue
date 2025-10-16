@@ -25,6 +25,7 @@
 
         <!-- Contacto -->
         <div class="flex flex-col md:flex-row gap-4">
+            <p>¿Tienes alguna duda?, ¡Contáctanos!</p>
             
             <a :href="settings.whatsapp_mobile"
                target="_blank"
