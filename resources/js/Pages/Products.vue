@@ -153,7 +153,7 @@
                                             'text-gray-500 hover:bg-gray-100': !page.url.includes(category.sku)
                                           }"
                                           :href="`/articulos/${category.sku}`">
-                                        {{ category.name }}
+                                        {{ category.name }} ({{ category.products_count}})
                                     </Link>
                                 </li>
                             </ul>
@@ -193,7 +193,7 @@
                                                 ${{ product.price }}
                                             </p>
                                         </div>
-                                        <div class="mt-2 flex justify-between">
+                                        <div class="mt-2 flex justify-center">
                                             <add-to-cart :product="product"></add-to-cart>
                                         </div>
                                     </div>
