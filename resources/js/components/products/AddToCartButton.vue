@@ -10,7 +10,8 @@
              viewBox="0 0 24 24" 
              stroke-width="1.5" 
              stroke="currentColor" 
-             class="w-6 h-6 text-white">
+             class="w-6 h-6 text-white"
+             v-if="!loading">
             <path stroke-linecap="round" 
                   stroke-linejoin="round" 
                   d="M2.25 2.25h1.386c.51 0 .955.343 1.087.835l.383 1.437m0 
@@ -19,21 +20,28 @@
                      1.5 0 100 3 1.5 1.5 0 000-3zm9 0a1.5 1.5 0 100 3 
                      1.5 1.5 0 000-3z" />
         </svg>
+        <span v-else>...</span>
     </button>
     <button class="mt-4 cursor-pointer bg-lime-600 hover:bg-lime-700
                    font-semibold py-3 px-6 rounded-xl shadow-md
                    transition duration-200 text-white"
             v-else
             @click="addProduct">
-        Agregar al carrito
+        <span v-if="!loading">
+            Agregar al carrito
+        </span>
+        <span v-else>...</span>
     </button>
 </template>
 
 <script setup>
+    import { ref } from 'vue'
     import { useCartStore } from '@/stores/cartStore.js';
     import Swal from 'sweetalert2';
 
     const cartStore = useCartStore();
+
+    let loading = ref(false);
 
     const props = defineProps({
         product: {
@@ -47,6 +55,11 @@
     })
 
     const addProduct = async () => {
+        if (loading.value) {
+            return;
+        }
+
+        loading.value = true;
         try {
             await cartStore.addToCart(props.product.sku);
 
@@ -65,6 +78,8 @@
                 showConfirmButton: true,
                 allowOutsideClick: false,
             });
+        } finally {
+            loading.value = false
         }
     }
 </script>

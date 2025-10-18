@@ -35,21 +35,19 @@
                 grid-cols-1 md:grid-cols-3 gap-8"
          v-else>
         <!-- Columna Izquierda -->
-        <div class="md:col-span-2 space-y-6">
-            <div class="flex items-center gap-4 border rounded-2xl
-                        p-2 shadow-sm bg-white dark:bg-gray-900"
+         <div class="hidden lg:block md:col-span-2 space-y-6">
+            <div class="flex items-center gap-4 border rounded-2xl p-2 shadow-sm bg-white dark:bg-gray-900"
                  :key="item.id"
                  v-for="item in cart">
-
                 <!-- Imagen -->
-                <img class="w-24 h-24 object-cover rounded-xl"
-                     :alt="item.product.name"
-                     :src="`/products/${item.product.photo}`" />
-
+                 <img class="w-24 h-24 object-cover rounded-xl"
+                      :alt="item.product.name"
+                      :src="`/products/${item.product.photo}`" />
+                      
                 <!-- Detalles -->
                 <div class="flex-1">
                     <h3 class="text-md font-semibold text-gray-900 dark:text-gray-100 mb-1">
-                        {{ item.product.name }}
+                        {{ item.product.short_name }}
                     </h3>
                     <p class="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-2">
                         ${{ item.product.price }}
@@ -58,50 +56,115 @@
                         {{ item.product.stock }} diponible(s) | <strong>${{ item.product.price * item.quantity }}</strong>
                     </p>
                 </div>
-
+                
                 <!-- Cantidad -->
                 <div class="flex items-center space-x-2">
-                    <button class="w-10 h-10 flex items-center justify-center rounded-full bg-white
-                                   border border-gray-300 dark:border-gray-700 text-gray-700 cursor-pointer
-                                   dark:text-gray-200 hover:bg-gray-500 dark:hover:bg-gray-800"
+                    <button class="w-10 h-10 flex items-center justify-center rounded-full
+                                   bg-white border border-gray-300 dark:border-gray-700 text-gray-700
+                                   cursor-pointer dark:text-gray-200 hover:bg-gray-500 dark:hover:bg-gray-800"
                             @click="decrease(item)">
                         -
                     </button>
-
-                    <input class="w-12 text-center border border-gray-300 dark:border-gray-700
-                                  rounded-md bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+                    <input class="w-12 text-center border border-gray-300
+                                  dark:border-gray-700 rounded-md bg-gray-50
+                                  dark:bg-gray-800 text-gray-900 dark:text-gray-100"
                            type="text"
                            readonly
                            :value="item.quantity"/>
-
-                    <button class="w-10 h-10 flex items-center justify-center rounded-full border bg-sky-950
-                                   border-gray-300 dark:border-gray-700 text-gray-100 dark:text-gray-200
-                                   hover:bg-gray-500 dark:hover:bg-gray-800 cursor-pointer"
+                    <button class="w-10 h-10 flex items-center justify-center rounded-full
+                                   border bg-sky-950 border-gray-300 dark:border-gray-700
+                                   text-gray-100 dark:text-gray-200 hover:bg-gray-500
+                                   dark:hover:bg-gray-800 cursor-pointer"
                             @click="increase(item)">
                         +
                     </button>
                 </div>
-
+                
                 <!-- Remover -->
                 <div class="flex items-center space-x-2">
-                    <button class="w-10 h-10 flex items-center justify-center rounded-full bg-red-400
-                                   border border-gray-300 dark:border-gray-700 text-white cursor-pointer
-                                   dark:text-gray-200 hover:bg-red-600 dark:hover:bg-gray-800"
+                    <button class="w-10 h-10 flex items-center justify-center rounded-full
+                                   bg-red-400 border border-gray-300 dark:border-gray-700
+                                   text-white cursor-pointer dark:text-gray-200 hover:bg-red-600
+                                   dark:hover:bg-gray-800"
                             @click="remove(item)">
                         <!-- Heroicons Trash -->
-                        <svg xmlns="http://www.w3.org/2000/svg" 
-                             fill="none" 
-                             viewBox="0 0 24 24" 
-                             stroke-width="1.5" 
-                             stroke="currentColor" 
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                             fill="none"
+                             viewBox="0 0 24 24"
+                             stroke-width="1.5"
+                             stroke="currentColor"
                              class="w-6 h-6">
                             <path stroke-linecap="round"
-                                  stroke-linejoin="round" 
-                                  d="M6 7.5V6a1.5 1.5 0 011.5-1.5h9A1.5 1.5 0
-                                     0118 6v1.5M4.5 7.5h15m-1.5 0v12A1.5 1.5 0
+                                  stroke-linejoin="round"
+                                  d="M6 7.5V6a1.5 1.5 0 011.5-1.5h9A1.5 1.5
+                                     0 0118 6v1.5M4.5 7.5h15m-1.5 0v12A1.5 1.5 0
                                      0116.5 21h-9A1.5 1.5 0 016 19.5v-12h12z" />
                         </svg>
                     </button>
+                </div>
+            </div>
+        </div>
+        <div class="block lg:hidden md:col-span-2 space-y-6">
+            <div class="flex flex-col gap-4 border rounded-2xl p-4 shadow-sm bg-white dark:bg-gray-900"
+                 :key="item.id"
+                 v-for="item in cart">
+                <!-- Imagen -->
+                <div class="flex justify-center">
+                    <img class="w-32 h-32 object-cover rounded-xl"
+                        :alt="item.product.name"
+                        :src="`/products/${item.product.photo}`"/>
+                </div>
+
+                <!-- Detalles -->
+                <div class="text-center">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1">
+                        {{ item.product.name }}
+                    </h3>
+                    <p class="text-md font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                        ${{ item.product.price }}
+                    </p>
+                    <p class="text-xs text-gray-500">
+                        {{ item.product.stock }} disponible(s) |
+                    <strong>${{ item.product.price * item.quantity }}</strong>
+                    </p>
+                </div>
+
+                <!-- Botones de cantidad y eliminar -->
+                <div class="flex flex-col items-center gap-3">
+                    <!-- Cantidad -->
+                    <div class="flex items-center gap-2">
+                        <button class="w-10 h-10 flex items-center justify-center rounded-full bg-white border border-gray-300 dark:border-gray-700 text-gray-700 cursor-pointer dark:text-gray-200 hover:bg-gray-500 dark:hover:bg-gray-800"
+                                @click="decrease(item)">
+                            -
+                        </button>
+
+                        <input class="w-12 text-center border border-gray-300 dark:border-gray-700 rounded-md bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+                            type="text"
+                            readonly
+                            :value="item.quantity"/>
+
+                        <button class="w-10 h-10 flex items-center justify-center rounded-full border bg-sky-950 border-gray-300 dark:border-gray-700 text-gray-100 dark:text-gray-200 hover:bg-gray-500 dark:hover:bg-gray-800 cursor-pointer"
+                                @click="increase(item)">
+                            +
+                        </button>
+
+                        <!-- Remover -->
+                        <button class="w-10 h-10 flex items-center justify-center rounded-full bg-red-400 border border-gray-300 dark:border-gray-700 text-white cursor-pointer dark:text-gray-200 hover:bg-red-600 dark:hover:bg-gray-800"
+                                @click="remove(item)">
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke-width="1.5"
+                                stroke="currentColor"
+                                class="w-6 h-6">
+                                <path stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M6 7.5V6a1.5 1.5 0 011.5-1.5h9A1.5 1.5 0
+                                        0118 6v1.5M4.5 7.5h15m-1.5 0v12A1.5 1.5 0
+                                        0116.5 21h-9A1.5 1.5 0 016 19.5v-12h12z"/>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
