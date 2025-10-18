@@ -49,7 +49,7 @@ return [
 
         'products' => [
             'driver' => 'local',
-            'root' => public_path('products'),
+            'root' => env('PRODUCTS_PATH', public_path('products')),
             'url' => env('APP_URL').'/products',
             'visibility' => 'public',
             'throw' => false,

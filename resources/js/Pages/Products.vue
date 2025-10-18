@@ -200,7 +200,7 @@
                                 </div>
                                 <!-- Pagination -->
                                 <div class="mt-4 flex space-x-2">
-                                    <button class="px-3 py-1 rounded border text-white dark:text-white"
+                                    <button class="px-5 py-2 rounded border text-white dark:text-white"
                                             :class="{
                                                 'bg-gray-400 text-white': link.active,
                                                 'bg-sky-950 text-gray-900 cursor-pointer': !link.active && link.url,

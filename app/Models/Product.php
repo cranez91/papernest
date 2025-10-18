@@ -48,6 +48,13 @@ class Product extends Model
             if ($product->isDirty('name')) {
                 $product->slug = Str::slug($product->name);
             }
+            if ($product->isDirty('photo')) {
+                $oldPhoto = $product->getOriginal('photo');
+
+                if ($oldPhoto && Storage::disk('products')->exists($oldPhoto)) {
+                    Storage::disk('products')->delete($oldPhoto);
+                }
+            }
         });
 
         static::deleting(function ($product) {
@@ -137,6 +144,6 @@ class Product extends Model
 
     public function getShortNameAttribute()
     {
-        return Str::limit($this->name, 22, '...');
+        return Str::limit($this->name, 25, '...');
     }
 }

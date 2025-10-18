@@ -36,21 +36,23 @@ class ProductResource extends Resource
         return $form->schema([
             Grid::make(2)->schema([
 
-                TextInput::make('name')
-                    ->label('Nombre')
-                    ->required()
-                    ->maxLength(255)
-                    ->reactive(),
-
                 TextInput::make('slug')
                     ->unique(ignoreRecord: true)
                     ->readOnly()
+                    ->disabled()
                     ->nullable(),
 
                 TextInput::make('sku')
                     ->unique(ignoreRecord: true)
                     ->readOnly()
+                    ->disabled()
                     ->nullable(),
+
+                TextInput::make('name')
+                    ->label('Nombre')
+                    ->required()
+                    ->maxLength(255)
+                    ->reactive(),
 
                 TextInput::make('brand')
                     ->label('Marca')
@@ -77,6 +79,7 @@ class ProductResource extends Resource
                 TextInput::make('stock')
                     ->label('En existencia')
                     ->numeric()
+                    ->required()
                     ->minValue(0)
                     ->default(0),
 
@@ -109,7 +112,6 @@ class ProductResource extends Resource
                 FileUpload::make('photo')
                     ->label('Foto')
                     ->image()
-                    //->imageEditor()
                     ->storeFileNamesIn('attachment_file_name')
                     ->disk('products') // Usa el disco 'products'
                     ->visibility('public')
