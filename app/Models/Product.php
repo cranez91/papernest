@@ -137,6 +137,6 @@ class Product extends Model
 
     public function getShortNameAttribute()
     {
-        return Str::limit($this->name, 22, '...');
+        return Str::limit($this->name, 25, '...');
     }
 }
