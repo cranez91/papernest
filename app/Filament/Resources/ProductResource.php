@@ -112,7 +112,6 @@ class ProductResource extends Resource
                 FileUpload::make('photo')
                     ->label('Foto')
                     ->image()
-                    //->imageEditor()
                     ->storeFileNamesIn('attachment_file_name')
                     ->disk('products') // Usa el disco 'products'
                     ->visibility('public')
