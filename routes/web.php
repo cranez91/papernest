@@ -12,10 +12,14 @@ use Spatie\Sitemap\Tags\Url;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-Route::get('/acerca',[HomeController::class, 'about'])->name('about');
-Route::get('/terminos',[HomeController::class, 'termsOfService'])->name('tos');
-Route::get('/privacidad',[HomeController::class, 'privacyPolicy'])->name('privacy');
+Route::get('/acerca', [HomeController::class, 'about'])->name('about');
+Route::get('/terminos', [HomeController::class, 'termsOfService'])->name('tos');
+Route::get('/privacidad', [HomeController::class, 'privacyPolicy'])->name('privacy');
 Route::get('/carrito', [HomeController::class, 'cart'])->name('cart');
+
+Route::get('/juega', [HomeController::class, 'juega'])->name('juega');
+Route::get('/juega/dino-runner', [HomeController::class, 'dinoRunner'])->name('juega.dino-runner');
+Route::get('/aprende', [HomeController::class, 'aprende'])->name('aprende');
 
 Route::get('/articulo/{sku?}', [ProductController::class, 'show'])->name('products.detail');
 Route::get('/articulos/{category?}', [ProductController::class, 'index'])->name('products.list');
@@ -44,11 +48,11 @@ Route::get('/sitemap.xml', function () {
             ->setLastModificationDate(now())
             ->setChangeFrequency(Url::CHANGE_FREQUENCY_DAILY)
             ->setPriority(1.0))
-        ->add(Url::create(config('app.url') . '/acerca'))
-        ->add(Url::create(config('app.url') . '/privacidad'))
-        ->add(Url::create(config('app.url') . '/terminos'))
-        ->add(Url::create(config('app.url') . '/articulos'))
-        ->add(Url::create(config('app.url') . '/carrito'));
+        ->add(Url::create(config('app.url').'/acerca'))
+        ->add(Url::create(config('app.url').'/privacidad'))
+        ->add(Url::create(config('app.url').'/terminos'))
+        ->add(Url::create(config('app.url').'/articulos'))
+        ->add(Url::create(config('app.url').'/carrito'));
 
     return $sitemap->toResponse(request());
 });

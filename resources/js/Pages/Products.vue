@@ -162,51 +162,57 @@
 
                         <!-- Product grid -->
                         <div class="lg:col-span-3">
-                            <div class="mx-auto max-w-2xl px-4 sm:px-6 lg:max-w-7xl lg:px-8"
-                                 v-if="products.data.length">
-                                <div class="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-3 xl:gap-x-8">
-                                    <div class="group relative"
-                                         v-for="product in products.data">
-                                        <Link :href="`/articulo/${product.sku}`">
-                                            <img :src="`/products/${product.photo}`"
-                                                 :alt="product.name"
-                                                 class="aspect-square w-full rounded-md bg-gray-200 object-cover
-                                                        group-hover:opacity-75 lg:aspect-auto lg:h-80" />
+                            <div v-if="products.data.length">
+                                <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
+                                    <article v-for="product in products.data"
+                                             :key="product.sku"
+                                             class="group flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm
+                                                    transition duration-200 hover:-translate-y-1 hover:shadow-xl">
+                                        <Link :href="`/articulo/${product.sku}`"
+                                              :title="product.name"
+                                              class="block aspect-square bg-gray-50 p-4">
+                                             <img :src="`/products/${product.photo}`"
+                                                  :alt="product.name"
+                                                  loading="lazy"
+                                                  class="h-full w-full object-contain transition duration-200 group-hover:scale-[1.03]"/>
                                         </Link>
-                                        <div class="mt-4 flex justify-between">
-                                            <div>
-                                                <h3 class="text-sm text-gray-700">
-                                                    <Link :href="`/articulo/${product.sku}`">
-                                                        {{ product.short_name }}
-                                                    </Link>
-                                                </h3>
-                                                <!-- Tooltip -->
-                                                <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block 
-                                                            bg-gray-900 text-white text-xs rounded px-2 py-1 shadow-lg">
-                                                    {{ product.name }}
-                                                </div>
-                                                <p class="mt-1 text-sm text-gray-500">
-                                                    {{ product.brand }}
-                                                </p>
-                                            </div>
-                                            <p class="text-sm font-medium text-gray-900">
-                                                ${{ product.price }}
+
+                                        <div class="flex flex-1 flex-col p-5">
+                                            <p class="text-xs font-semibold uppercase tracking-wide text-gray-500">
+                                                {{ product.brand }}
                                             </p>
+                                            <h3 class="mt-2 min-h-10 text-base font-semibold text-gray-900">
+                                                <Link :href="`/articulo/${product.sku}`"
+                                                      :title="product.name"
+                                                      class="transition hover:text-amber-700">
+                                                    {{ product.short_name }}
+                                                </Link>
+                                            </h3>
+
+                                            <div class="mt-5 flex items-end justify-between gap-3 border-t border-gray-100 pt-4">
+                                                <div>
+                                                    <p class="text-xs text-gray-500">
+                                                        Precio
+                                                    </p>
+                                                    <p class="mt-1 text-lg font-bold text-lime-600">
+                                                        ${{ product.price }}
+                                                    </p>
+                                                </div>
+                                                <div class="shrink-0 [&>button]:mt-0 [&>button]:px-4 [&>button]:py-2.5">
+                                                    <add-to-cart :product="product"></add-to-cart>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="mt-2 flex justify-center">
-                                            <add-to-cart :product="product"></add-to-cart>
-                                        </div>
-                                    </div>
+                                    </article>
                                 </div>
-                                <!-- Pagination -->
-                                <div class="mt-4 flex space-x-2">
-                                    <button class="px-5 py-2 rounded border text-white dark:text-white"
-                                            :class="{
-                                                'bg-gray-400 text-white': link.active,
-                                                'bg-sky-950 text-gray-900 cursor-pointer': !link.active && link.url,
-                                                'bg-sky-950 text-gray-900 opacity-50 cursor-not-allowed': !link.url,
-                                            }"
-                                            :key="link.label"
+                                <div class="mt-8 flex flex-wrap gap-2">
+                                    <button class="rounded-xl border px-4 py-2 text-sm font-semibold transition"
+                                             :class="{
+                                                'border-amber-500 bg-amber-500 text-white': link.active,
+                                                'border-gray-200 bg-white text-gray-700 hover:border-amber-300 hover:bg-amber-50 cursor-pointer': !link.active && link.url,
+                                                'border-gray-200 bg-gray-100 text-gray-400 opacity-50 cursor-not-allowed': !link.url,
+                                             }"
+                                             :key="link.label"
                                             :disabled="!link.url"
                                             v-html="link.label"
                                             v-for="link in products.links"
@@ -214,9 +220,9 @@
                                     />
                                 </div>
                             </div>
-                            <div class="mx-auto max-w-2xl px-4 sm:px-6 lg:max-w-7xl lg:px-8"
-                                 v-else>
-                                <h1 class="font-bold">No se encontraron productos</h1>
+                            <div v-else
+                                 class="rounded-2xl border border-gray-200 bg-white p-8 text-center text-gray-600 shadow-sm">
+                                No se encontraron productos.
                             </div>
                         </div>
                     </div>
