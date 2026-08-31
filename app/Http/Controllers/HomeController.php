@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\Coupon;
 use App\Models\Product;
 use App\Models\Setting;
@@ -12,7 +11,8 @@ use Inertia\Inertia;
 
 class HomeController extends Controller
 {
-    public function index(Request $request) {
+    public function index(Request $request)
+    {
         $products = Product::activeItems()
             ->basicInfo()
             ->with(['category:id,name'])
@@ -21,30 +21,32 @@ class HomeController extends Controller
             ->get();
 
         return Inertia::render('Home', [
-            'products' => $products
+            'products' => $products,
         ]);
     }
 
-    public function cart(Request $request) {
+    public function cart(Request $request)
+    {
         $shipping_price = Setting::first()?->shipping_price ?? 0;
         $today = Carbon::now('America/Mexico_City')->format('Y-m-d');
 
         $coupons = Coupon::where('status', 'active')
-            ->where('start_date', '<=' , $today)
-            ->where('end_date', '>=' , $today)
+            ->where('start_date', '<=', $today)
+            ->where('end_date', '>=', $today)
             ->select(['code', 'description', 'min_total', 'discount_percentage'])
             ->get();
 
         return Inertia::render('Cart', [
             'shipping' => $shipping_price,
-            'coupons' => $coupons
+            'coupons' => $coupons,
         ]);
     }
 
-    public function about(Request $request) {
+    public function about(Request $request)
+    {
         $settings = Setting::first();
-        
-        if (!is_null($settings)) {
+
+        if (! is_null($settings)) {
             $settings->whatsapp_web = "https://web.whatsapp.com/send?phone=+52{$settings->whatsapp_contact}";
             $settings->whatsapp_mobile = "https://api.whatsapp.com/send?phone=+52{$settings->whatsapp_contact}";
             $settings->messenger = "https://m.me/{$settings->facebook_id}";
@@ -52,15 +54,32 @@ class HomeController extends Controller
         }
 
         return Inertia::render('About', [
-            'settings' => $settings
+            'settings' => $settings,
         ]);
     }
 
-    public function termsOfService(Request $request) {
+    public function juega(Request $request)
+    {
+        return Inertia::render('Juega/Index');
+    }
+
+    public function dinoRunner(Request $request)
+    {
+        return Inertia::render('Juega/DinoRunner');
+    }
+
+    public function aprende(Request $request)
+    {
+        return Inertia::render('Aprende/Index');
+    }
+
+    public function termsOfService(Request $request)
+    {
         return Inertia::render('TermsOfService');
     }
 
-    public function privacyPolicy(Request $request) {
+    public function privacyPolicy(Request $request)
+    {
         return Inertia::render('PrivacyPolicy');
     }
 }

@@ -51,6 +51,16 @@
                           :href="route('about')">
                         Acerca de
                     </Link>
+
+                    <Link class="text-sm/6 font-semibold text-gray-900"
+                          :href="route('juega')">
+                        Juega
+                    </Link>
+
+                    <Link class="text-sm/6 font-semibold text-gray-900"
+                          :href="route('aprende')">
+                        Aprende
+                    </Link>
                 </div>
                 <div class="hidden lg:flex lg:flex-1 lg:justify-end">
                     <cart-items/>
@@ -105,6 +115,14 @@
                                     <Link :href="route('about')"
                                        class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">
                                         Acerca de
+                                    </Link>
+                                    <Link :href="route('juega')"
+                                       class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">
+                                        Juega
+                                    </Link>
+                                    <Link :href="route('aprende')"
+                                       class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">
+                                        Aprende
                                     </Link>
                                 </div>
                                 <div class="py-6">
